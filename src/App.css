@@ -28,13 +28,13 @@ body,
   --brand: #97d8b2;
   --brand-rgb: 151 216 178;
 
-  /* Tinted neutrals: trace of brand only (cf. bg ~3%, surface ~1.5%, border grey ~5%) */
-  --neutral-50: color-mix(in srgb, #fafafa 97%, var(--brand) 3%);
-  --neutral-100: color-mix(in srgb, #f5f5f5 97%, var(--brand) 3%);
+  /* Tinted neutrals: trace of brand only */
+  --neutral-50: color-mix(in srgb, #fafafa 96%, var(--brand) 4%);
+  --neutral-100: color-mix(in srgb, #f5f5f5 96%, var(--brand) 4%);
   --neutral-200: color-mix(in srgb, #e5e5e5 95%, var(--brand) 5%);
   --neutral-300: color-mix(in srgb, #d4d4d4 94%, var(--brand) 6%);
   --neutral-400: color-mix(in srgb, #a3a3a3 93%, var(--brand) 7%);
-  --neutral-500: color-mix(in srgb, #737373 97%, var(--brand) 3%);
+  --neutral-500: color-mix(in srgb, #737373 96%, var(--brand) 4%);
   --neutral-600: color-mix(in srgb, #525252 94%, var(--brand) 6%);
   --neutral-700: color-mix(in srgb, #404040 95%, var(--brand) 5%);
   --neutral-800: color-mix(in srgb, #262626 96%, var(--brand) 4%);

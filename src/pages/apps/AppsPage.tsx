@@ -190,7 +190,7 @@ export function AppsPage({ onNavigateToSettings }: AppsPageProps) {
                         ))}
                       </div>
                     ) : (
-                      <p className="text-muted-foreground mt-3 text-sm">
+                      <p className="text-muted-foreground mt-3 text-xs font-light italic">
                         No prompts assigned yet. Add one below for quick access
                         when this app is active.
                       </p>
@@ -217,7 +217,7 @@ export function AppsPage({ onNavigateToSettings }: AppsPageProps) {
                           inputClassName="w-full min-w-0 max-w-none"
                         />
                       </div>
-                      <p className="text-muted-foreground text-xs">
+                      <p className="text-muted-foreground text-xs font-light">
                         {addablePrompts.length > 0
                           ? "Apps can map to multiple prompts."
                           : "No additional prompts available."}

@@ -118,7 +118,6 @@ export function SettingsPage() {
                   themeMode === value
                     ? [
                         "bg-background text-foreground hover:bg-background shadow-sm",
-                        // secondary and muted are the same hex in .dark — use input + border so the pill reads clearly
                         "dark:border-border dark:text-foreground dark:hover:text-foreground dark:bg-neutral-900 dark:shadow-xs dark:hover:bg-neutral-900/80",
                       ]
                     : "text-muted-foreground hover:text-foreground",

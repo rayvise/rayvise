@@ -44,7 +44,7 @@ export function WebsitePromptSiteList({
               "h-auto min-h-0 w-full flex-col items-stretch rounded-xl border p-2 text-left font-normal",
               isSelected
                 ? "border-primary/30 bg-primary/8"
-                : "border-border bg-background/70 hover:bg-background",
+                : "border-border bg-background/70",
             )}
           >
             <div className="flex items-center gap-3">
@@ -59,7 +59,7 @@ export function WebsitePromptSiteList({
                   <p className="text-foreground truncate text-sm font-semibold">
                     {site.domain || "New website"}
                   </p>
-                  <span className="bg-muted text-muted-foreground rounded-full px-1.5 py-0.5 text-[10px] leading-none">
+                  <span className="bg-secondary text-muted-foreground rounded-full px-1.5 py-0.5 text-[10px] leading-none">
                     {site.rules.length}
                   </span>
                 </div>

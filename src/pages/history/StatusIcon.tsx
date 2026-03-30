@@ -11,5 +11,5 @@ export function StatusIcon({ row }: { row: CompletionEntry }) {
     return <CheckCircle2 size={13} className="shrink-0 text-emerald-500" />;
   }
 
-  return <XCircle size={13} className="shrink-0 text-orange-400" />;
+  return <XCircle size={13} className="shrink-0 text-red-400" />;
 }

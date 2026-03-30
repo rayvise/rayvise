@@ -25,7 +25,7 @@ function ClearHistoryDialog({ onConfirm }: { onConfirm: () => void }) {
           <Button
             type="button"
             variant="outline"
-            className="border-border bg-muted/20 text-muted-foreground hover:border-border hover:bg-muted/30 hover:text-foreground gap-2 px-4 py-2 text-[12px] font-normal"
+            className="border-border bg-muted/30 text-muted-foreground hover:border-border hover:bg-muted/30 hover:text-foreground gap-2 px-4 py-2 text-[12px] font-normal"
           />
         }
       >
@@ -70,7 +70,7 @@ function ResetAllDialog({ onConfirm }: { onConfirm: () => void }) {
           <Button
             type="button"
             variant="destructive"
-            className="border-destructive/30 bg-destructive/10 text-destructive/70 hover:border-destructive/50 hover:bg-destructive/20 hover:text-destructive w-full gap-2 px-4 py-2 text-[12px] font-normal"
+            className="border-destructive/30 bg-destructive/10 text-destructive/70 hover:border-destructive/50 hover:bg-destructive/20 hover:text-destructive gap-2 px-4 py-2 text-[12px] font-normal"
           />
         }
       >
@@ -196,7 +196,7 @@ export function OverviewPanel({
       )}
 
       {/* Actions */}
-      <section className="mt-auto flex flex-col gap-2 pt-2">
+      <section className="mt-auto flex justify-end gap-2 pt-2">
         <ClearHistoryDialog onConfirm={onClearHistory} />
         <ResetAllDialog onConfirm={onResetAll} />
       </section>
