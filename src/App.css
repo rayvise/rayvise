@@ -102,15 +102,15 @@ body,
    * Dark surfaces stay nearly neutral charcoal; brand is a trace.
    * Light end of scale = text (barely off-white + hint of green).
    */
-  --neutral-950: color-mix(in srgb, #0a0a0a 96.5%, var(--brand) 3.5%);
-  --neutral-900: color-mix(in srgb, #141414 96%, var(--brand) 4%);
-  --neutral-800: color-mix(in srgb, #1f1f1f 95%, var(--brand) 5%);
-  --neutral-700: color-mix(in srgb, #2a2a2a 94.5%, var(--brand) 5.5%);
-  --neutral-600: color-mix(in srgb, #3f3f3f 94%, var(--brand) 6%);
-  --neutral-500: color-mix(in srgb, #525252 93.5%, var(--brand) 6.5%);
-  --neutral-400: color-mix(in srgb, #737373 93%, var(--brand) 7%);
-  --neutral-300: color-mix(in srgb, #a3a3a3 92%, var(--brand) 8%);
-  --neutral-200: color-mix(in srgb, #d4d4d4 91%, var(--brand) 9%);
+  --neutral-950: color-mix(in srgb, #0a0a0a 97%, var(--brand) 3%);
+  --neutral-900: color-mix(in srgb, #141414 97%, var(--brand) 3%);
+  --neutral-800: color-mix(in srgb, #1f1f1f 96%, var(--brand) 4%);
+  --neutral-700: color-mix(in srgb, #2a2a2a 95%, var(--brand) 5%);
+  --neutral-600: color-mix(in srgb, #3f3f3f 95%, var(--brand) 5%);
+  --neutral-500: color-mix(in srgb, #525252 94%, var(--brand) 6%);
+  --neutral-400: color-mix(in srgb, #737373 94%, var(--brand) 6%);
+  --neutral-300: color-mix(in srgb, #a3a3a3 93%, var(--brand) 7%);
+  --neutral-200: color-mix(in srgb, #d4d4d4 92%, var(--brand) 8%);
   --neutral-100: color-mix(in srgb, #eceeec 97%, var(--brand) 3%);
   --neutral-50: color-mix(in srgb, #f6f8f7 98%, var(--brand) 2%);
 
