@@ -113,7 +113,7 @@ export function AppsPage({ onNavigateToSettings }: AppsPageProps) {
                   )}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/70 shadow-sm ring-1 ring-black/5 dark:bg-white/5 dark:ring-white/10">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/70 shadow-sm ring-1 ring-neutral-900/8 dark:bg-white/5 dark:ring-neutral-200/15">
                       {iconSrcByBundleId[app.bundleId] ? (
                         <img
                           src={iconSrcByBundleId[app.bundleId]}
@@ -190,7 +190,7 @@ export function AppsPage({ onNavigateToSettings }: AppsPageProps) {
                         ))}
                       </div>
                     ) : (
-                      <p className="text-muted-foreground mt-3 text-sm">
+                      <p className="text-muted-foreground mt-3 text-xs font-light italic">
                         No prompts assigned yet. Add one below for quick access
                         when this app is active.
                       </p>
@@ -217,7 +217,7 @@ export function AppsPage({ onNavigateToSettings }: AppsPageProps) {
                           inputClassName="w-full min-w-0 max-w-none"
                         />
                       </div>
-                      <p className="text-muted-foreground text-xs">
+                      <p className="text-muted-foreground text-xs font-light">
                         {addablePrompts.length > 0
                           ? "Apps can map to multiple prompts."
                           : "No additional prompts available."}

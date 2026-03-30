@@ -227,13 +227,13 @@ export function NewPromptPage({ onCreated, prefill }: NewPromptPageProps) {
           onChange={setSelectedAppIds}
         />
 
-        <div className="border-border bg-muted/10 space-y-4 rounded-xl border p-4">
+        <div className="border-border bg-muted/10 space-y-4 rounded-lg border p-3">
           <div className="flex items-start justify-between gap-3">
             <div className="space-y-1">
-              <p className="text-foreground text-sm font-semibold">
+              <p className="text-foreground text-sm font-medium">
                 Website prompt
               </p>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-muted-foreground text-xs">
                 Optionally connect this prompt to a website or page when you
                 save it.
               </p>
@@ -265,7 +265,7 @@ export function NewPromptPage({ onCreated, prefill }: NewPromptPageProps) {
           {websiteEnabled ? (
             <div className="space-y-4">
               <div className="space-y-2">
-                <p className="text-muted-foreground text-xs">
+                <p className="text-muted-foreground text-xs font-medium">
                   When you trigger Raypaste while on the connected website or
                   page, this prompt will be used.
                 </p>
