@@ -149,7 +149,7 @@ body,
   --chart-3: #5fb884;
   --chart-4: #a8e0c0;
   --chart-5: #c4ebce;
-  --sidebar: var(--neutral-950);
+  --sidebar: var(--neutral-900);
   --sidebar-foreground: var(--text-primary);
   --sidebar-primary: var(--brand);
   --sidebar-primary-foreground: var(--neutral-950);
