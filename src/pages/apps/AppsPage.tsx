@@ -113,7 +113,7 @@ export function AppsPage({ onNavigateToSettings }: AppsPageProps) {
                   )}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/70 shadow-sm ring-1 ring-black/5 dark:bg-white/5 dark:ring-white/10">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/70 shadow-sm ring-1 ring-neutral-900/8 dark:bg-white/5 dark:ring-neutral-200/15">
                       {iconSrcByBundleId[app.bundleId] ? (
                         <img
                           src={iconSrcByBundleId[app.bundleId]}

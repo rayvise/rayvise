@@ -119,7 +119,7 @@ export function SettingsPage() {
                     ? [
                         "bg-background text-foreground hover:bg-background shadow-sm",
                         // secondary and muted are the same hex in .dark — use input + border so the pill reads clearly
-                        "dark:border-border dark:bg-input dark:text-foreground dark:hover:bg-input/90 dark:hover:text-foreground dark:shadow-md",
+                        "dark:border-border dark:text-foreground dark:hover:text-foreground dark:bg-neutral-900 dark:shadow-xs dark:hover:bg-neutral-900/80",
                       ]
                     : "text-muted-foreground hover:text-foreground",
                 )}
@@ -390,7 +390,7 @@ export function SettingsPage() {
                         key={app.bundleId}
                         className="bg-muted/20 flex items-center gap-3 rounded-lg border px-3 py-2"
                       >
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/70 shadow-sm ring-1 ring-black/5 dark:bg-white/5 dark:ring-white/10">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/70 shadow-sm ring-1 ring-neutral-900/8 dark:bg-white/5 dark:ring-neutral-200/15">
                           {hiddenAppIcons[app.bundleId] ? (
                             <img
                               src={hiddenAppIcons[app.bundleId]}
