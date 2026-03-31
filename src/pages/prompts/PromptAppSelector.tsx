@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import {
   filterComboboxItems,
@@ -37,7 +37,7 @@ export function PromptAppSelector({
   assignedAppIds,
   onChange,
 }: PromptAppSelectorProps) {
-  const { apps, setApps } = useAppsStore();
+  const { apps, setApps, hiddenAppBundleIds } = useAppsStore();
   const [query, setQuery] = useState("");
   const { searchDirty, onOpenChange, markSearchDirtyFromInput } =
     useComboboxSearchDirty();
@@ -55,17 +55,30 @@ export function PromptAppSelector({
 
   const anchor = useComboboxAnchor();
 
+  const hiddenSet = useMemo(
+    () => new Set(hiddenAppBundleIds),
+    [hiddenAppBundleIds],
+  );
+  const selectableApps = useMemo(
+    () => apps.filter((a) => !hiddenSet.has(a.bundleId)),
+    [apps, hiddenSet],
+  );
+
   // Preserve order to match combobox chip index positions
   const assignedApps = assignedAppIds
     .map((id) => apps.find((a) => a.bundleId === id))
     .filter(Boolean) as InstalledApp[];
 
   const filteredApps = filterComboboxItems(
-    apps,
+    selectableApps,
     query,
     searchDirty,
     (a) => a.name,
   );
+
+  const allSelectableAssigned =
+    selectableApps.length > 0 &&
+    selectableApps.every((a) => assignedAppIds.includes(a.bundleId));
 
   return (
     <div className="space-y-2">
@@ -111,7 +124,7 @@ export function PromptAppSelector({
                 {app.name}
               </ComboboxItem>
             ))}
-            {apps.length === assignedApps.length && (
+            {allSelectableAssigned && (
               <ComboboxEmpty>
                 All available apps have been assigned.
               </ComboboxEmpty>
