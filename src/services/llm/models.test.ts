@@ -13,6 +13,10 @@ describe("provider model registry", () => {
   it("filters OpenRouter models to the current provisioned set", () => {
     expect(getProviderModelOptions(LLM_PROVIDER.OpenRouter)).toEqual([
       { value: "openai/gpt-oss-120b", label: "GPT OSS 120B" },
+      {
+        value: "meta-llama/llama-3.1-8b-instruct",
+        label: "Llama 3.1 8B",
+      },
     ]);
   });
 
@@ -34,6 +38,7 @@ describe("provider model registry", () => {
       { value: "gpt-5", label: "GPT-5" },
       { value: "gpt-5-mini", label: "GPT-5 Mini" },
       { value: "gpt-5-nano", label: "GPT-5 Nano" },
+      { value: "gpt-4o-mini", label: "GPT-4o Mini" },
     ]);
   });
 
