@@ -1,6 +1,7 @@
 import { useSettingsStore } from "#/stores";
 import { openrouterClient } from "./openrouter";
 import { cerebrasClient } from "./cerebras";
+import { openaiClient } from "./openai";
 import { raypasteApiClient } from "./raypaste-api";
 import { dryRunClient } from "./dryRun";
 import type { LLMClient } from "./types";
@@ -18,7 +19,15 @@ export function getLLMClient(): LLMClient {
     return raypasteApiClient;
   }
 
-  return provider === LLM_PROVIDER.Cerebras ? cerebrasClient : openrouterClient;
+  switch (provider) {
+    case LLM_PROVIDER.Cerebras:
+      return cerebrasClient;
+    case LLM_PROVIDER.OpenAI:
+      return openaiClient;
+    case LLM_PROVIDER.OpenRouter:
+    default:
+      return openrouterClient;
+  }
 }
 
 export function getApiKey(): string {
@@ -26,10 +35,18 @@ export function getApiKey(): string {
     return "dry-run";
   }
 
-  const { provider, openrouterApiKey, cerebrasApiKey } =
+  const { provider, openrouterApiKey, cerebrasApiKey, openaiApiKey } =
     useSettingsStore.getState();
 
-  return provider === LLM_PROVIDER.Cerebras ? cerebrasApiKey : openrouterApiKey;
+  switch (provider) {
+    case LLM_PROVIDER.Cerebras:
+      return cerebrasApiKey;
+    case LLM_PROVIDER.OpenAI:
+      return openaiApiKey;
+    case LLM_PROVIDER.OpenRouter:
+    default:
+      return openrouterApiKey;
+  }
 }
 
 export type { LLMClient, LLMRequest, LLMMessage } from "./types";

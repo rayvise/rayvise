@@ -21,9 +21,18 @@ import {
   ComboboxContent,
   ComboboxList,
   ComboboxItem,
+  ComboboxGroup,
   ComboboxEmpty,
+  ComboboxLabel,
 } from "#/components/ui/combobox";
 import { Button } from "#/components/ui/button";
+import {
+  DIRECT_PROVIDER_OPTIONS,
+  getModelLabel,
+  getProviderAccessDescription,
+  getProviderLabel,
+  getProviderModelOptions,
+} from "#/services/llm/models";
 
 export function SettingsPage() {
   const {
@@ -31,6 +40,7 @@ export function SettingsPage() {
     provider,
     openrouterApiKey,
     cerebrasApiKey,
+    openaiApiKey,
     model,
     reviewMode,
     themeMode,
@@ -38,18 +48,13 @@ export function SettingsPage() {
     setProvider,
     setOpenrouterApiKey,
     setCerebrasApiKey,
+    setOpenaiApiKey,
     setModel,
     setReviewMode,
     setThemeMode,
   } = useSettingsStore();
 
-  const modelOptions = [
-    { value: "openai/gpt-oss-120b", label: "GPT OSS 120B" },
-    {
-      value: "meta-llama/llama-3.1-8b-instruct",
-      label: "Llama 3.1 8B Instruct",
-    },
-  ];
+  const modelOptions = getProviderModelOptions(provider);
 
   const { prompts, defaultPromptId, setDefaultPrompt } = usePromptsStore();
   const { apps, hiddenAppBundleIds, unhideApp } = useAppsStore();
@@ -79,15 +84,20 @@ export function SettingsPage() {
     (m) => m.label,
   );
 
-  const modelLabelForId = (id: string) =>
-    modelOptions.find((m) => m.value === id)?.label ?? id;
+  const modelLabelForId = (id: string) => getModelLabel(id);
 
   const currentKey =
-    provider === LLM_PROVIDER.Cerebras ? cerebrasApiKey : openrouterApiKey;
+    provider === LLM_PROVIDER.Cerebras
+      ? cerebrasApiKey
+      : provider === LLM_PROVIDER.OpenAI
+        ? openaiApiKey
+        : openrouterApiKey;
   const setCurrentKey =
     provider === LLM_PROVIDER.Cerebras
       ? setCerebrasApiKey
-      : setOpenrouterApiKey;
+      : provider === LLM_PROVIDER.OpenAI
+        ? setOpenaiApiKey
+        : setOpenrouterApiKey;
 
   const themeOptions: {
     value: ThemeMode;
@@ -174,12 +184,15 @@ export function SettingsPage() {
         <section className="space-y-3">
           <h2 className="text-foreground text-sm font-semibold">Provider</h2>
           <div className="flex gap-2">
-            {Object.values(LLM_PROVIDER).map((p) => (
+            {DIRECT_PROVIDER_OPTIONS.map((p) => (
               <Button
                 key={p}
                 type="button"
                 variant="outline"
-                onClick={() => setProvider(p)}
+                onClick={() => {
+                  setProvider(p);
+                  setModelQuery("");
+                }}
                 className={cn(
                   "capitalize",
                   provider === p
@@ -187,7 +200,7 @@ export function SettingsPage() {
                     : "border-border text-muted-foreground hover:border-primary/50 hover:text-foreground dark:hover:bg-input/40",
                 )}
               >
-                {p === LLM_PROVIDER.OpenRouter ? "OpenRouter" : "Cerebras"}
+                {getProviderLabel(p)}
               </Button>
             ))}
           </div>
@@ -198,8 +211,7 @@ export function SettingsPage() {
       {mode === "direct" && (
         <section className="space-y-2">
           <h2 className="text-foreground text-xs font-medium">
-            {provider === LLM_PROVIDER.OpenRouter ? "OpenRouter" : "Cerebras"}{" "}
-            API Key
+            {getProviderLabel(provider)} API Key
           </h2>
           <div className="flex h-8 gap-2">
             <input
@@ -275,6 +287,49 @@ export function SettingsPage() {
         </div>
       </section>
 
+      {/* Model */}
+      <section className="space-y-3">
+        <h2 className="text-foreground text-sm font-semibold">Model</h2>
+        <Combobox
+          value={model}
+          itemToStringLabel={modelLabelForId}
+          onValueChange={(id) => {
+            if (id != null && id !== "") setModel(id);
+          }}
+          onOpenChange={modelSearch.onOpenChange}
+          onInputValueChange={(val) => setModelQuery(val)}
+        >
+          <ComboboxInput
+            placeholder="Select a model..."
+            showTrigger
+            className="w-full"
+            onInput={modelSearch.markSearchDirtyFromInput}
+          />
+          <ComboboxContent>
+            {filteredModelOptions.length === 0 && (
+              <ComboboxEmpty>No models found</ComboboxEmpty>
+            )}
+            <ComboboxList>
+              <ComboboxGroup>
+                <ComboboxLabel>{getProviderLabel(provider)}</ComboboxLabel>
+                {filteredModelOptions.map((m) => (
+                  <ComboboxItem
+                    key={m.value}
+                    value={m.value}
+                    className="py-2 pl-3"
+                  >
+                    {m.label}
+                  </ComboboxItem>
+                ))}
+              </ComboboxGroup>
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+        <p className="text-muted-foreground text-xs">
+          {getProviderAccessDescription(provider)}
+        </p>
+      </section>
+
       {/* Default Prompt */}
       <section className="space-y-3">
         <h2 className="text-foreground text-sm font-semibold">
@@ -311,43 +366,6 @@ export function SettingsPage() {
         <p className="text-muted-foreground text-xs">
           Used when no website prompt or app-specific prompt applies
         </p>
-      </section>
-
-      {/* Model */}
-      <section className="space-y-3">
-        <h2 className="text-foreground text-sm font-semibold">Model</h2>
-        <Combobox
-          value={model}
-          itemToStringLabel={modelLabelForId}
-          onValueChange={(id) => {
-            if (id != null && id !== "") setModel(id);
-          }}
-          onOpenChange={modelSearch.onOpenChange}
-          onInputValueChange={(val) => setModelQuery(val)}
-        >
-          <ComboboxInput
-            placeholder="Select a model..."
-            showTrigger
-            className="w-full"
-            onInput={modelSearch.markSearchDirtyFromInput}
-          />
-          <ComboboxContent>
-            {filteredModelOptions.length === 0 && (
-              <ComboboxEmpty>No models found</ComboboxEmpty>
-            )}
-            <ComboboxList>
-              {filteredModelOptions.map((m) => (
-                <ComboboxItem
-                  key={m.value}
-                  value={m.value}
-                  className="py-2 pl-3"
-                >
-                  {m.label}
-                </ComboboxItem>
-              ))}
-            </ComboboxList>
-          </ComboboxContent>
-        </Combobox>
       </section>
 
       {/* Import & Export */}

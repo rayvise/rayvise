@@ -60,7 +60,7 @@ For detailed compatibility information and contributor guidance on cross-platfor
 | Frontend      | React 19 + TypeScript                    |
 | Styling       | Tailwind CSS v4                          |
 | State         | Zustand                                  |
-| LLM providers | OpenRouter, Cerebras                     |
+| LLM providers | OpenRouter, Cerebras, OpenAI             |
 
 ## Quick Start
 
@@ -75,14 +75,16 @@ For full setup instructions see the **[getting started guide](docs/DEV_GETTING_S
 
 ## LLM Providers
 
-Raypaste currently supports two **direct-to-provider** modes (your data never touches Raypaste servers):
+Raypaste currently supports three **direct-to-provider** modes (your data never touches Raypaste servers):
 
 - **[OpenRouter](https://openrouter.ai/)** — access to a wide range of models
   - [Models used by Raypaste users](https://openrouter.ai/apps?url=https%3A%2F%2Fraypaste.com%2F) — see what models people are using with Raypaste through OpenRouter
 - **[Cerebras](https://www.cerebras.ai/)** — ultra-fast inference powered by their Wafer Scale Engine
   - [Cerebras Chips](https://www.cerebras.ai/chip) - read more about Cerebras hardware
+- **[OpenAI](https://platform.openai.com/)** — direct access to the GPT-5 and GPT-5.4 families in Raypaste
 
 Configure your API keys in the Raypaste app's Settings page (your API keys are stored on your device and do not pass through Raypaste's servers).
+The Settings page filters models by provider so users only see the models currently provisioned for that direct connection. See **[docs/MODEL_PROVIDER_COMPLIANCE.md](docs/MODEL_PROVIDER_COMPLIANCE.md)** for the current matrix.
 
 ## Contributing
 

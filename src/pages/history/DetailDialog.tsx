@@ -23,6 +23,8 @@ import {
 import { toast } from "#/hooks/useToast";
 import { cn } from "#/lib/utils";
 import { usePromptsStore } from "#/stores";
+import { getProviderLabel } from "#/services/llm/models";
+import { type LLMProvider, LLM_PROVIDER } from "#/services/llm/types";
 import {
   findWebsiteSiteIdForCompletion,
   promptSourceDisplayLabel,
@@ -130,6 +132,12 @@ function SectionHeader({
 
 function countVisible(v: Record<ColumnKey, boolean>) {
   return (["input", "output", "final"] as const).filter((k) => v[k]).length;
+}
+
+function formatProviderLabel(provider: string): string {
+  return Object.values(LLM_PROVIDER).includes(provider as LLMProvider)
+    ? getProviderLabel(provider as LLMProvider)
+    : provider;
 }
 
 function ResizableTwoColumn({
@@ -244,7 +252,7 @@ function DetailDialogMetadataHeader({
           <span className="text-sky-500">Instant</span>
         )}
         <span>·</span>
-        <span className="capitalize">{row.provider}</span>
+        <span>{formatProviderLabel(row.provider)}</span>
         <span>·</span>
         <span className="font-mono">{row.model}</span>
       </div>
