@@ -1,6 +1,7 @@
 import type { LLMClient, LLMCompletion, LLMRequest } from "./types";
 import { chatCompletionBody } from "./chatCompletionBody";
 import { getCompletionText, parseSSEStream } from "./streaming";
+import { LLM_PROVIDER } from "./types";
 
 const BASE_URL = "https://api.openai.com/v1/chat/completions";
 
@@ -16,7 +17,7 @@ export const openaiClient: LLMClient = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`,
       },
-      body: JSON.stringify(chatCompletionBody(req, false)),
+      body: JSON.stringify(chatCompletionBody(LLM_PROVIDER.OpenAI, req, false)),
       signal,
     });
 
@@ -50,7 +51,7 @@ export const openaiClient: LLMClient = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`,
       },
-      body: JSON.stringify(chatCompletionBody(req, true)),
+      body: JSON.stringify(chatCompletionBody(LLM_PROVIDER.OpenAI, req, true)),
       signal,
     });
 

@@ -7,7 +7,7 @@ export const LLM_PROVIDER = {
 export type LLMProvider = (typeof LLM_PROVIDER)[keyof typeof LLM_PROVIDER];
 
 export interface LLMMessage {
-  role: "system" | "user" | "assistant";
+  role: "instruction" | "user" | "assistant";
   content: string;
 }
 

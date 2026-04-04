@@ -42,8 +42,6 @@ const PROVIDER_MODEL_OPTIONS: Record<LLMProvider, ProviderModelOption[]> = {
 
 export const DEFAULT_DIRECT_PROVIDER = LLM_PROVIDER.OpenRouter;
 
-const ALL_PROVIDER_MODEL_OPTIONS = Object.values(PROVIDER_MODEL_OPTIONS).flat();
-
 export function isLLMProvider(value: unknown): value is LLMProvider {
   return (
     typeof value === "string" &&
@@ -65,9 +63,9 @@ export function getProviderModelOptions(
   return PROVIDER_MODEL_OPTIONS[provider];
 }
 
-export function getModelLabel(model: string): string {
+export function getModelLabel(provider: LLMProvider, model: string): string {
   return (
-    ALL_PROVIDER_MODEL_OPTIONS.find((option) => option.value === model)
+    PROVIDER_MODEL_OPTIONS[provider].find((option) => option.value === model)
       ?.label ?? model
   );
 }
@@ -108,7 +106,7 @@ export function getProviderAccessDescription(provider: LLMProvider): string {
     case LLM_PROVIDER.OpenRouter:
       return "Select from models currently supported for OpenRouter direct mode.";
     case LLM_PROVIDER.Cerebras:
-      return "Selet from models currently validated against the Cerebras Inference API.";
+      return "Select from models currently validated against the Cerebras Inference API.";
     case LLM_PROVIDER.OpenAI:
       return "Select from supported OpenAI models.";
   }

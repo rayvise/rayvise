@@ -1,4 +1,9 @@
-import type { LLMClient, LLMCompletion, LLMRequest } from "./types";
+import {
+  LLM_PROVIDER,
+  type LLMClient,
+  type LLMCompletion,
+  type LLMRequest,
+} from "./types";
 import { chatCompletionBody } from "./chatCompletionBody";
 import { getCompletionText, parseSSEStream } from "./streaming";
 
@@ -21,7 +26,9 @@ export const openrouterClient: LLMClient = {
         Authorization: `Bearer ${apiKey}`,
         ...EXTRA_HEADERS,
       },
-      body: JSON.stringify(chatCompletionBody(req, false)),
+      body: JSON.stringify(
+        chatCompletionBody(LLM_PROVIDER.OpenRouter, req, false),
+      ),
       signal,
     });
     if (!res.ok) throw new Error(`OpenRouter error: ${res.status}`);
@@ -53,7 +60,9 @@ export const openrouterClient: LLMClient = {
         Authorization: `Bearer ${apiKey}`,
         ...EXTRA_HEADERS,
       },
-      body: JSON.stringify(chatCompletionBody(req, true)),
+      body: JSON.stringify(
+        chatCompletionBody(LLM_PROVIDER.OpenRouter, req, true),
+      ),
       signal,
     });
     if (!res.ok) {

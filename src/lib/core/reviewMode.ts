@@ -32,7 +32,7 @@ export async function runReviewMode(p: ModeParams) {
     await getLLMClient().stream(
       {
         messages: [
-          { role: "system", content: p.prompt.text },
+          { role: "instruction", content: p.prompt.text },
           { role: "user", content: p.selected_text },
         ],
         model: p.model,

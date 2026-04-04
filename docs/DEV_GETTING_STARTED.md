@@ -41,7 +41,7 @@ You can set one or more of [OpenRouter](https://openrouter.ai/), [Cerebras](http
 
 **(Privacy-first):** Your prompt, inputs, and outputs do not pass through Raypaste's servers and are not stored anywhere in our database. Your request goes from the app to the provider you selected and returns directly back to you. Please review each provider's privacy policies on how they will interact with your personal/business data.
 
-Raypaste filters the model picker by provider so only the models currently provisioned and validated for that direct connection are shown. See [MODEL_PROVIDER_COMPLIANCE.md](MODEL_PROVIDER_COMPLIANCE.md) for the current matrix.
+Raypaste filters the model picker by provider so only models allowed for that direct connection are shown. See [MODEL_PROVIDER_COMPLIANCE.md](MODEL_PROVIDER_COMPLIANCE.md) for the filtering and normalization rules.
 
 ### Raypaste API
 

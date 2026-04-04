@@ -2,21 +2,19 @@
 
 Raypaste direct mode intentionally exposes a provider-scoped model list instead of one shared catalog.
 
-## Current direct-mode model access
+## Current direct-mode behavior
 
-| Provider | Models shown in Raypaste | Notes |
-| --- | --- | --- |
-| OpenRouter | `openai/gpt-oss-120b` | Kept to the currently provisioned OpenRouter arrangement. |
-| Cerebras | `openai/gpt-oss-120b`, `meta-llama/llama-3.1-8b-instruct` | Matches the models currently validated against Cerebras Inference. |
-| OpenAI | `gpt-5.4`, `gpt-5.4-mini`, `gpt-5.4-nano`, `gpt-5`, `gpt-5-mini`, `gpt-5-nano` | Scoped to the GPT-5 family currently enabled in Raypaste direct mode. |
+- Each provider owns its own allowed-model registry and display order.
+- The registry lives in `src/services/llm/models.ts`.
+- The Settings model picker only shows models returned by the active provider's registry entry.
+- Providers may expose overlapping model ids with provider-specific labels.
 
 ## How filtering works
 
-- The provider registry lives in `src/services/llm/models.ts`.
-- Each direct provider declares its own allowed models and display order.
 - When the active provider changes, Raypaste keeps the current model only if that provider explicitly allows it.
 - If the selected model is not allowed for the newly selected provider, Raypaste automatically falls back to that provider's default model.
-- The Settings model picker renders only the models returned by the active provider registry entry.
+- When persisted settings are loaded, Raypaste normalizes both the provider and model against the current registry.
+- Label lookup is provider-aware so shared model ids can still render provider-specific names in the UI.
 
 ## Why this exists
 
@@ -30,5 +28,5 @@ When provider access changes:
 
 1. Update `src/services/llm/models.ts`.
 2. Add or remove any provider transport logic needed under `src/services/llm/`.
-3. Update `docs/MODEL_PROVIDER_COMPLIANCE.md` so the documented matrix stays in sync with the UI.
+3. Update `docs/MODEL_PROVIDER_COMPLIANCE.md` if the registry behavior, normalization rules, or provider-specific transport assumptions change.
 4. Extend the tests in `src/services/llm/models.test.ts` if the provider list or ordering changes.

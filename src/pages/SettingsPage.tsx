@@ -84,7 +84,7 @@ export function SettingsPage() {
     (m) => m.label,
   );
 
-  const modelLabelForId = (id: string) => getModelLabel(id);
+  const modelLabelForId = (id: string) => getModelLabel(provider, id);
 
   const currentKey =
     provider === LLM_PROVIDER.Cerebras

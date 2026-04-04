@@ -84,7 +84,7 @@ Raypaste currently supports three **direct-to-provider** modes (your data never 
 - **[OpenAI](https://platform.openai.com/)** — direct access to the GPT-5 and GPT-5.4 families in Raypaste
 
 Configure your API keys in the Raypaste app's Settings page (your API keys are stored on your device and do not pass through Raypaste's servers).
-The Settings page filters models by provider so users only see the models currently provisioned for that direct connection. See **[docs/MODEL_PROVIDER_COMPLIANCE.md](docs/MODEL_PROVIDER_COMPLIANCE.md)** for the current matrix.
+The Settings page filters models by provider so users only see models allowed for that direct connection. See **[docs/MODEL_PROVIDER_COMPLIANCE.md](docs/MODEL_PROVIDER_COMPLIANCE.md)** for how provider-scoped filtering and normalization work.
 
 ## Contributing
 

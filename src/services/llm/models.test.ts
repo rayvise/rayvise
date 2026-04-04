@@ -48,11 +48,33 @@ describe("provider model registry", () => {
     ).toBe(getDefaultModelForProvider(LLM_PROVIDER.OpenAI));
   });
 
-  it("maps known model ids to friendly labels", () => {
-    expect(getModelLabel("gpt-5.4-mini")).toBe("GPT-5.4 Mini");
+  it("maps known model ids to provider-aware friendly labels", () => {
+    expect(getModelLabel(LLM_PROVIDER.OpenAI, "gpt-5.4-mini")).toBe(
+      "GPT-5.4 Mini",
+    );
+  });
+
+  it("keeps duplicate ids provider-scoped when resolving labels", () => {
+    expect(
+      getModelLabel(
+        LLM_PROVIDER.OpenRouter,
+        "meta-llama/llama-3.1-8b-instruct",
+      ),
+    ).toBe("Llama 3.1 8B");
+    expect(
+      getModelLabel(LLM_PROVIDER.Cerebras, "meta-llama/llama-3.1-8b-instruct"),
+    ).toBe("Llama 3.1 8B Instruct");
+  });
+
+  it("falls back to the raw model id when a provider label is unknown", () => {
+    expect(getModelLabel(LLM_PROVIDER.OpenAI, "unknown-model")).toBe(
+      "unknown-model",
+    );
   });
 
   it("falls back to the default direct provider for invalid persisted values", () => {
-    expect(normalizeLLMProvider("not-a-provider")).toBe(DEFAULT_DIRECT_PROVIDER);
+    expect(normalizeLLMProvider("not-a-provider")).toBe(
+      DEFAULT_DIRECT_PROVIDER,
+    );
   });
 });

@@ -1,4 +1,9 @@
-import type { LLMClient, LLMCompletion, LLMRequest } from "./types";
+import {
+  LLM_PROVIDER,
+  type LLMClient,
+  type LLMCompletion,
+  type LLMRequest,
+} from "./types";
 import { chatCompletionBody } from "./chatCompletionBody";
 import { getCompletionText, parseSSEStream } from "./streaming";
 
@@ -20,7 +25,7 @@ function toCerebrasModelId(model: string): string {
 }
 
 function cerebrasRequestBody(req: LLMRequest, stream: boolean) {
-  const base = chatCompletionBody(req, stream);
+  const base = chatCompletionBody(LLM_PROVIDER.Cerebras, req, stream);
   return { ...base, model: toCerebrasModelId(base.model) };
 }
 

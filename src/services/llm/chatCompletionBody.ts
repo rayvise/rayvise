@@ -1,28 +1,32 @@
-import type { LLMRequest } from "./types";
+import { LLM_PROVIDER, type LLMProvider, type LLMRequest } from "./types";
 
-function normalizeModelId(model: string): string {
-  return model.startsWith("openai/") ? model.slice("openai/".length) : model;
+function toProviderRole(
+  provider: LLMProvider,
+  role: LLMRequest["messages"][number]["role"],
+): "developer" | "system" | "user" | "assistant" {
+  switch (role) {
+    case "instruction":
+      return provider === LLM_PROVIDER.OpenAI ? "developer" : "system";
+    case "user":
+    case "assistant":
+      return role;
+  }
 }
 
-function getReasoningEffort(model: string): string | null {
-  const normalized = normalizeModelId(model).toLowerCase();
-  if (normalized === "gpt-5.4" || normalized.startsWith("gpt-5.4-")) {
-    return "none";
-  }
-
-  if (normalized === "gpt-5" || normalized.startsWith("gpt-5-")) {
-    return "minimal";
-  }
-
-  return null;
-}
-
-/** JSON body for OpenAI-compatible chat/completions (strips Raypaste-only fields). */
-export function chatCompletionBody(req: LLMRequest, stream: boolean) {
-  const { dryRunMetadata, ...rest } = req;
+/** JSON body for chat/completions (strips Raypaste-only fields). */
+export function chatCompletionBody(
+  provider: LLMProvider,
+  req: LLMRequest,
+  stream: boolean,
+) {
+  const { dryRunMetadata, messages, ...rest } = req;
   void dryRunMetadata;
-  const reasoningEffort = getReasoningEffort(rest.model);
-  return reasoningEffort
-    ? { ...rest, stream, reasoning_effort: reasoningEffort }
-    : { ...rest, stream };
+  return {
+    ...rest,
+    messages: messages.map((message) => ({
+      ...message,
+      role: toProviderRole(provider, message.role),
+    })),
+    stream,
+  };
 }
