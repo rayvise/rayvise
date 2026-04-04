@@ -32,14 +32,16 @@ When dry run is active:
 
 ## API Keys and LLM Connections
 
-Raypaste offers 2 ways to get LLM completions **direct-to-provider** and in the future **raypaste-api**.
+Raypaste offers direct-to-provider completions today and will support **raypaste-api** in the future.
 You can configure your options in the app settings.
 
 ### Direct to Provider
 
-You can set one or both of [OpenRouter](https://openrouter.ai/) or [Cerebras](https://www.cerebras.ai/) API keys and select which one you want to route your requests through.
+You can set one or more of [OpenRouter](https://openrouter.ai/), [Cerebras](https://www.cerebras.ai/), or [OpenAI](https://platform.openai.com/) API keys and select which one you want to route your requests through.
 
-**(Privacy-first):** Your prompt, inputs, and outputs do not pass through Raypaste's servers and are not stored anywhere in our database. Your request goes from the app to OpenRouter or Cerebras directly and returns directly back to you. Please review OpenRouter and Cerebras' privacy policies on how they will interact with your personal/business data—generally when paying for usage and with settings properly configured this means your data stays private.
+**(Privacy-first):** Your prompt, inputs, and outputs do not pass through Raypaste's servers and are not stored anywhere in our database. Your request goes from the app to the provider you selected and returns directly back to you. Please review each provider's privacy policies on how they will interact with your personal/business data.
+
+Raypaste filters the model picker by provider so only models allowed for that direct connection are shown. See [MODEL_PROVIDER_COMPLIANCE.md](MODEL_PROVIDER_COMPLIANCE.md) for the filtering and normalization rules.
 
 ### Raypaste API
 

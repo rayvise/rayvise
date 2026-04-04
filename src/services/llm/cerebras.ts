@@ -1,5 +1,11 @@
-import type { LLMClient, LLMCompletion, LLMRequest } from "./types";
+import {
+  LLM_PROVIDER,
+  type LLMClient,
+  type LLMCompletion,
+  type LLMRequest,
+} from "./types";
 import { chatCompletionBody } from "./chatCompletionBody";
+import { getCompletionText, parseSSEStream } from "./streaming";
 
 const BASE_URL = "https://api.cerebras.ai/v1/chat/completions";
 
@@ -19,47 +25,8 @@ function toCerebrasModelId(model: string): string {
 }
 
 function cerebrasRequestBody(req: LLMRequest, stream: boolean) {
-  const base = chatCompletionBody(req, stream);
+  const base = chatCompletionBody(LLM_PROVIDER.Cerebras, req, stream);
   return { ...base, model: toCerebrasModelId(base.model) };
-}
-
-async function parseSSEStream(
-  body: ReadableStream<Uint8Array>,
-  onChunk: (text: string) => void,
-) {
-  const reader = body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) {
-      break;
-    }
-
-    buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split("\n");
-    buffer = lines.pop() ?? "";
-    for (const line of lines) {
-      if (!line.startsWith("data:")) {
-        continue;
-      }
-
-      const raw = line.slice(5).trim();
-      if (raw === "[DONE]") {
-        break;
-      }
-
-      try {
-        const chunk = JSON.parse(raw);
-        const delta = chunk.choices?.[0]?.delta?.content;
-        if (delta) {
-          onChunk(delta as string);
-        }
-      } catch {
-        // ignore malformed chunks
-      }
-    }
-  }
 }
 
 export const cerebrasClient: LLMClient = {
@@ -81,12 +48,12 @@ export const cerebrasClient: LLMClient = {
       throw new Error(`Cerebras error: ${res.status}`);
     }
     const data = (await res.json()) as {
-      choices: { message: { content: string } }[];
+      choices?: Array<{ message?: { content?: unknown } }>;
       usage?: { prompt_tokens?: number; completion_tokens?: number };
     };
 
     return {
-      text: data.choices[0].message.content,
+      text: getCompletionText(data),
       usage: {
         input_tokens: data.usage?.prompt_tokens ?? null,
         output_tokens: data.usage?.completion_tokens ?? null,

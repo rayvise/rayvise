@@ -1,19 +1,11 @@
-import {
-  LLM_PROVIDER,
-  type LLMClient,
-  type LLMCompletion,
-  type LLMRequest,
-} from "./types";
+import type { LLMClient, LLMCompletion, LLMRequest } from "./types";
 import { chatCompletionBody } from "./chatCompletionBody";
 import { getCompletionText, parseSSEStream } from "./streaming";
+import { LLM_PROVIDER } from "./types";
 
-const BASE_URL = "https://openrouter.ai/api/v1/chat/completions";
-const EXTRA_HEADERS = {
-  "HTTP-Referer": "https://raypaste.com",
-  "X-Title": "Raypaste",
-};
+const BASE_URL = "https://api.openai.com/v1/chat/completions";
 
-export const openrouterClient: LLMClient = {
+export const openaiClient: LLMClient = {
   async complete(
     req: LLMRequest,
     apiKey: string,
@@ -24,14 +16,14 @@ export const openrouterClient: LLMClient = {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`,
-        ...EXTRA_HEADERS,
       },
-      body: JSON.stringify(
-        chatCompletionBody(LLM_PROVIDER.OpenRouter, req, false),
-      ),
+      body: JSON.stringify(chatCompletionBody(LLM_PROVIDER.OpenAI, req, false)),
       signal,
     });
-    if (!res.ok) throw new Error(`OpenRouter error: ${res.status}`);
+
+    if (!res.ok) {
+      throw new Error(`OpenAI error: ${res.status}`);
+    }
 
     const data = (await res.json()) as {
       choices?: Array<{ message?: { content?: unknown } }>;
@@ -58,15 +50,13 @@ export const openrouterClient: LLMClient = {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`,
-        ...EXTRA_HEADERS,
       },
-      body: JSON.stringify(
-        chatCompletionBody(LLM_PROVIDER.OpenRouter, req, true),
-      ),
+      body: JSON.stringify(chatCompletionBody(LLM_PROVIDER.OpenAI, req, true)),
       signal,
     });
+
     if (!res.ok) {
-      throw new Error(`OpenRouter error: ${res.status}`);
+      throw new Error(`OpenAI error: ${res.status}`);
     }
 
     await parseSSEStream(res.body!, onChunk);
