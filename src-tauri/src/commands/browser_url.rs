@@ -6,14 +6,28 @@ use std::process::Command;
 use std::sync::mpsc;
 use std::time::Duration;
 
-const OSASCRIPT_TIMEOUT: Duration = Duration::from_millis(400);
+const OSASCRIPT_TIMEOUT: Duration = Duration::from_millis(1200);
 
-fn chromium_script(app_display_name: &str) -> String {
+fn chromium_front_window_script(app_display_name: &str) -> String {
     format!(
         r#"tell application "{}"
     try
         if (count of windows) is 0 then return ""
         return (URL of active tab of front window) as string
+    on error
+        return ""
+    end try
+end tell"#,
+        app_display_name.replace('"', "\\\"")
+    )
+}
+
+fn chromium_first_window_script(app_display_name: &str) -> String {
+    format!(
+        r#"tell application "{}"
+    try
+        if (count of windows) is 0 then return ""
+        return (URL of active tab of first window) as string
     on error
         return ""
     end try
@@ -34,7 +48,7 @@ end tell"#
 }
 
 /// Arc's AppleScript differs from Chromium (`first window`, `active tab`)
-fn arc_script() -> &'static str {
+fn arc_first_window_script() -> &'static str {
     r#"tell application "Arc"
     try
         if (count of windows) is 0 then return ""
@@ -47,15 +61,17 @@ fn arc_script() -> &'static str {
 end tell"#
 }
 
-fn script_for_bundle(bundle_id: &str) -> Option<&'static str> {
-    // Static scripts for browsers with fixed display names
-    match bundle_id {
-        "com.apple.Safari" => Some(safari_script()),
-        "company.thebrowser.Browser" => Some(arc_script()),
-        // Firefox: no reliable URL via AppleScript; avoid UI-scripting the address bar.
-        "org.mozilla.firefox" | "org.mozilla.firefoxdeveloperedition" => None,
-        _ => None,
-    }
+fn arc_front_window_script() -> &'static str {
+    r#"tell application "Arc"
+    try
+        if (count of windows) is 0 then return ""
+        tell front window
+            return (URL of active tab) as string
+        end tell
+    on error
+        return ""
+    end try
+end tell"#
 }
 
 fn chromium_app_name(bundle_id: &str) -> Option<&'static str> {
@@ -66,6 +82,26 @@ fn chromium_app_name(bundle_id: &str) -> Option<&'static str> {
         "com.microsoft.edgemac" => Some("Microsoft Edge"),
         "com.operasoftware.Opera" => Some("Opera"),
         _ => None,
+    }
+}
+
+fn scripts_for_bundle(bundle_id: &str) -> Vec<String> {
+    match bundle_id {
+        "com.apple.Safari" => vec![safari_script().to_string()],
+        "company.thebrowser.Browser" => vec![
+            arc_first_window_script().to_string(),
+            arc_front_window_script().to_string(),
+        ],
+        // Firefox: no reliable URL via AppleScript; avoid UI-scripting the address bar.
+        "org.mozilla.firefox" | "org.mozilla.firefoxdeveloperedition" => Vec::new(),
+        _ => chromium_app_name(bundle_id)
+            .map(|name| {
+                vec![
+                    chromium_front_window_script(name),
+                    chromium_first_window_script(name),
+                ]
+            })
+            .unwrap_or_default(),
     }
 }
 
@@ -101,11 +137,10 @@ fn run_osascript(script: &str) -> Option<String> {
 
 /// Returns the active tab URL for known browsers, or None if unavailable.
 pub fn try_get_active_tab_url(bundle_id: &str) -> Option<String> {
-    if let Some(script) = script_for_bundle(bundle_id) {
-        return run_osascript(script);
-    }
-    if let Some(name) = chromium_app_name(bundle_id) {
-        return run_osascript(&chromium_script(name));
+    for script in scripts_for_bundle(bundle_id) {
+        if let Some(url) = run_osascript(&script) {
+            return Some(url);
+        }
     }
     None
 }
@@ -116,7 +151,22 @@ mod tests {
 
     #[test]
     fn chromium_script_escapes_quotes() {
-        let s = chromium_script("Google Chrome");
+        let s = chromium_front_window_script("Google Chrome");
         assert!(s.contains("Google Chrome"));
+    }
+
+    #[test]
+    fn normalize_url_rejects_non_http_schemes() {
+        assert_eq!(
+            normalize_url("https://raypaste.com/path\n".to_string()),
+            Some("https://raypaste.com/path".to_string())
+        );
+        assert_eq!(normalize_url("chrome://settings".to_string()), None);
+    }
+
+    #[test]
+    fn scripts_for_arc_tries_multiple_window_variants() {
+        let scripts = scripts_for_bundle("company.thebrowser.Browser");
+        assert_eq!(scripts.len(), 2);
     }
 }
