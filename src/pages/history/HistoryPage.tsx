@@ -78,7 +78,7 @@ export function HistoryPage({
   // Refresh when a new completion is saved
   const doRefresh = useCallback(() => setRefreshKey((k) => k + 1), []);
   useEffect(() => {
-    const unlisten = listen("raypaste://completion-saved", doRefresh);
+    const unlisten = listen("rayvise://completion-saved", doRefresh);
     return () => {
       unlisten.then((fn) => fn());
     };

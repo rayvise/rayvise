@@ -2,12 +2,12 @@
 
 If you have never run a Tauri app locally before check that you have the [prerequisites here](https://v2.tauri.app/start/prerequisites/)
 
-## Running Raypaste Locally
+## Running Rayvise Locally
 
 ```bash
 # Install dependencies
 pnpm install
-# Run Raypaste frontend and backend
+# Run Rayvise frontend and backend
 pnpm tauri dev
 ```
 
@@ -32,20 +32,20 @@ When dry run is active:
 
 ## API Keys and LLM Connections
 
-Raypaste offers direct-to-provider completions today and will support **raypaste-api** in the future.
+Rayvise offers direct-to-provider completions today and will support **rayvise-api** in the future.
 You can configure your options in the app settings.
 
 ### Direct to Provider
 
 You can set one or more of [OpenRouter](https://openrouter.ai/), [Cerebras](https://www.cerebras.ai/), or [OpenAI](https://platform.openai.com/) API keys and select which one you want to route your requests through.
 
-**(Privacy-first):** Your prompt, inputs, and outputs do not pass through Raypaste's servers and are not stored anywhere in our database. Your request goes from the app to the provider you selected and returns directly back to you. Please review each provider's privacy policies on how they will interact with your personal/business data.
+**(Privacy-first):** Your prompt, inputs, and outputs do not pass through Rayvise's servers and are not stored anywhere in our database. Your request goes from the app to the provider you selected and returns directly back to you. Please review each provider's privacy policies on how they will interact with your personal/business data.
 
-Raypaste filters the model picker by provider so only models allowed for that direct connection are shown. See [MODEL_PROVIDER_COMPLIANCE.md](MODEL_PROVIDER_COMPLIANCE.md) for the filtering and normalization rules.
+Rayvise filters the model picker by provider so only models allowed for that direct connection are shown. See [MODEL_PROVIDER_COMPLIANCE.md](MODEL_PROVIDER_COMPLIANCE.md) for the filtering and normalization rules.
 
-### Raypaste API
+### Rayvise API
 
-After the main Raypaste app functionalities are built; and running the app locally/privately is in a good spot, the internal Raypaste team will begin building out harnesses to improve our universal AI experience bringing fast, flexible, and most importantly useful AI completions to everyone's workflows.
+After the main Rayvise app functionalities are built; and running the app locally/privately is in a good spot, the internal Rayvise team will begin building out harnesses to improve our universal AI experience bringing fast, flexible, and most importantly useful AI completions to everyone's workflows.
 
 ## Contributing
 

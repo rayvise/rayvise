@@ -131,12 +131,12 @@ fn resolve_icon_paths(
     }
 }
 
-/// Returns `~/Library/Caches/raypaste/icons`, creating it if needed.
+/// Returns `~/Library/Caches/rayvise/icons`, creating it if needed.
 /// Uses the macOS cache directory instead of /tmp so converted icons survive
 /// OS temp-file cleanup between app restarts.
 fn get_icon_cache_dir() -> std::path::PathBuf {
     let home = std::env::var("HOME").unwrap_or_default();
-    let cache_dir = std::path::PathBuf::from(format!("{}/Library/Caches/raypaste/icons", home));
+    let cache_dir = std::path::PathBuf::from(format!("{}/Library/Caches/rayvise/icons", home));
     if !cache_dir.exists() {
         let _ = std::fs::create_dir_all(&cache_dir);
     }

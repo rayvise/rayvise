@@ -10,7 +10,7 @@ import { ModeParams, isAbortError } from "./types";
 // Review mode is used when the user wants to review the completion before applying it to the target app.
 export async function runReviewMode(p: ModeParams) {
   // Do not activate the target app here: foregrounding Chrome (etc.) before the
-  // review webview opens leaves keyboard focus outside Raypaste, so shortcuts
+  // review webview opens leaves keyboard focus outside Rayvise, so shortcuts
   // like ⌘↩ on the review window never fire. Focus returns to the target on
   // dismiss / apply / cancel via existing listeners.
 
@@ -56,7 +56,7 @@ export async function runReviewMode(p: ModeParams) {
           }
         }
         // Emit full accumulated text to avoid race-condition gaps
-        emit("raypaste://stream-chunk", { text: accumulatedText }).catch(
+        emit("rayvise://stream-chunk", { text: accumulatedText }).catch(
           () => {},
         );
       },
@@ -88,7 +88,7 @@ export async function runReviewMode(p: ModeParams) {
       model: p.model,
       provider: p.provider,
     });
-    await emit("raypaste://completion-saved");
+    await emit("rayvise://completion-saved");
 
     // Update localStorage to final ready state before signalling done
     localStorage.setItem(
@@ -102,7 +102,7 @@ export async function runReviewMode(p: ModeParams) {
         durationMs,
       }),
     );
-    await emit("raypaste://stream-done");
+    await emit("rayvise://stream-done");
   } catch (err) {
     if (isAbortError(err)) {
       localStorage.removeItem(REVIEW_STORAGE_KEY);
@@ -110,7 +110,7 @@ export async function runReviewMode(p: ModeParams) {
     }
 
     const errorMessage = err instanceof Error ? err.message : String(err);
-    await emit("raypaste://stream-error", { message: errorMessage });
+    await emit("rayvise://stream-error", { message: errorMessage });
     localStorage.removeItem(REVIEW_STORAGE_KEY);
 
     await saveCompletion({

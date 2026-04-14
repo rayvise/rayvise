@@ -266,7 +266,7 @@ export function NewPromptPage({ onCreated, prefill }: NewPromptPageProps) {
             <div className="space-y-4">
               <div className="space-y-2">
                 <p className="text-muted-foreground text-xs font-medium">
-                  When you trigger Raypaste while on the connected website or
+                  When you trigger Rayvise while on the connected website or
                   page, this prompt will be used.
                 </p>
                 <label className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">

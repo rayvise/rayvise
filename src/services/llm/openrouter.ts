@@ -9,8 +9,8 @@ import { getCompletionText, parseSSEStream } from "./streaming";
 
 const BASE_URL = "https://openrouter.ai/api/v1/chat/completions";
 const EXTRA_HEADERS = {
-  "HTTP-Referer": "https://raypaste.com",
-  "X-Title": "Raypaste",
+  "HTTP-Referer": "https://rayvise.com",
+  "X-Title": "Rayvise",
 };
 
 export const openrouterClient: LLMClient = {

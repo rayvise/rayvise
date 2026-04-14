@@ -54,7 +54,7 @@ let dbPromise: Promise<ReturnType<typeof drizzle>> | null = null;
 async function getDb() {
   if (!dbPromise) {
     dbPromise = (async () => {
-      const sqlite = await Database.load("sqlite:raypaste.db");
+      const sqlite = await Database.load("sqlite:rayvise.db");
 
       await runMigrations(sqlite);
 

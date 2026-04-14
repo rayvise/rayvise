@@ -770,7 +770,7 @@ export const usePromptsStore = create<PromptsState>()(
       },
     }),
     {
-      name: "raypaste-prompts",
+      name: "rayvise-prompts",
       // Migration + invariant: recompute denormalized `websitePromptSiteIds` after load so
       // persisted data predating that field, or any drift, cannot break sidebar "Unassigned".
       merge: (persisted, current) => {

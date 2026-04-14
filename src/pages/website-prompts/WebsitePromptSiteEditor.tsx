@@ -122,12 +122,12 @@ export function WebsitePromptSiteEditor({
           )}
         />
         <p className="text-muted-foreground text-xs">
-          Enter a domain like <code>example.com</code>. Raypaste automatically
+          Enter a domain like <code>example.com</code>. Rayvise automatically
           gets the site&apos;s icon.
         </p>
         {domainInputValue.trim() && !normalizeDomainInput(domainInputValue) && (
           <p className="text-xs text-amber-600">
-            Enter a complete domain before Raypaste can save or fetch its icon.
+            Enter a complete domain before Rayvise can save or fetch its icon.
           </p>
         )}
       </div>

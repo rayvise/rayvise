@@ -47,7 +47,7 @@ export function NotificationPage() {
     <div className="flex h-full w-full items-end justify-end bg-transparent p-2">
       <div className={containerClass}>
         <span className="min-w-0 flex-1 text-xs leading-snug wrap-break-word">
-          Raypaste: {message}
+          Rayvise: {message}
         </span>
         {overlay === OVERLAY.toast && (
           <div className="flex shrink-0 flex-col items-end gap-1">

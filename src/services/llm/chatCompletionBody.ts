@@ -13,7 +13,7 @@ function toProviderRole(
   }
 }
 
-/** JSON body for chat/completions (strips Raypaste-only fields). */
+/** JSON body for chat/completions (strips Rayvise-only fields). */
 export function chatCompletionBody(
   provider: LLMProvider,
   req: LLMRequest,

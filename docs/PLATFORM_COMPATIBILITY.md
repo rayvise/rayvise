@@ -1,6 +1,6 @@
 # Platform Compatibility
 
-Raypaste is currently a **macOS-first** desktop app built with Tauri 2, a Rust backend, and a React/TypeScript frontend.
+Rayvise is currently a **macOS-first** desktop app built with Tauri 2, a Rust backend, and a React/TypeScript frontend.
 
 This document is intended for potential users and contributors who want to understand:
 
@@ -12,7 +12,7 @@ This document is intended for potential users and contributors who want to under
 
 ### macOS
 
-Raypaste is currently designed around macOS workflows and APIs.
+Rayvise is currently designed around macOS workflows and APIs.
 
 The following areas are implemented with macOS-specific behavior:
 
@@ -59,11 +59,11 @@ Recent work improved app icon rendering by:
 
 ## macOS Distribution Considerations
 
-Distributing Raypaste to macOS users is realistic, but there are important operational and security concerns.
+Distributing Rayvise to macOS users is realistic, but there are important operational and security concerns.
 
 ### App permissions
 
-Raypaste relies on system-level integrations that may require user approval, especially for:
+Rayvise relies on system-level integrations that may require user approval, especially for:
 
 - Accessibility permissions
 - automation-like behavior involving other applications
@@ -207,7 +207,7 @@ Needed work:
 
 For contributors, the most practical path is:
 
-1. Treat Raypaste as officially macOS-first today.
+1. Treat Rayvise as officially macOS-first today.
 2. Add clear compile-time platform boundaries in the Rust backend.
 3. Make non-macOS builds compile with unsupported features disabled.
 4. Introduce platform adapters for app discovery, icon loading, focused app lookup, and text automation.
@@ -231,7 +231,7 @@ Contributors should aim to keep:
 
 ## User Expectations
 
-If you are evaluating Raypaste as a user today:
+If you are evaluating Rayvise as a user today:
 
 - macOS is the intended platform
 - Windows and Linux should be treated as future work
@@ -239,7 +239,7 @@ If you are evaluating Raypaste as a user today:
 
 ## Summary
 
-Raypaste currently works best as a macOS-native workflow tool with deep platform integration.
+Rayvise currently works best as a macOS-native workflow tool with deep platform integration.
 
 Cross-platform distribution is possible in the long term, but it will require:
 

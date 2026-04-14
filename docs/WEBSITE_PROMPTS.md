@@ -8,7 +8,7 @@
 
 Matching uses the **current tab URL** (`page_url`) from the Rust hotkey pipeline. The backend resolves it off the main thread via `commands::browser_url::try_get_active_tab_url` (AppleScript for Chrome, Safari, Arc, Brave, Edge, Opera, etc.). **Firefox** does not expose a reliable active-tab URL that way, so `page_url` is often missing there.
 
-- If `page_url` is present and parses as a URL, Raypaste tries **website prompt** matching first.
+- If `page_url` is present and parses as a URL, Rayvise tries **website prompt** matching first.
 - If `page_url` is missing or no site matches, resolution falls back to **per-app prompt → default prompt → built-in “Formal” → first prompt** (see below).
 
 When you have at least one website configured but the hotkey fires in a **known browser** with **no** `page_url`, the app shows a short **info toast once per browser bundle ID** explaining that the fallback chain was used (`src/hooks/useAICompletionListener.ts`).

@@ -59,7 +59,7 @@ export const useSettingsStore = create<SettingsState>()(
       setThemeMode: (themeMode) => set({ themeMode }),
     }),
     {
-      name: "raypaste-settings",
+      name: "rayvise-settings",
       merge: (persistedState, currentState) => {
         const persisted = (persistedState ?? {}) as Partial<SettingsState> & {
           reviewMode?: unknown;

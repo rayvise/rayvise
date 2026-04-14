@@ -49,7 +49,7 @@ export const useAppsStore = create<AppsState>()(
         })),
     }),
     {
-      name: "raypaste-apps",
+      name: "rayvise-apps",
       partialize: (state) => ({
         hiddenAppBundleIds: state.hiddenAppBundleIds,
       }),

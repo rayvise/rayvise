@@ -110,7 +110,7 @@ export function useAICompletionListener() {
 
   useEffect(() => {
     const unlistenHotkey = listen<HotkeyPayload>(
-      "raypaste://hotkey-triggered",
+      "rayvise://hotkey-triggered",
       async (event) => {
         const { app, selected_text, target_pid, page_url } = event.payload;
 
@@ -147,7 +147,7 @@ export function useAICompletionListener() {
         ) {
           websitePromptHintedAppsRef.current.add(app);
           showToastOverlay(
-            "Website prompts were unavailable for this tab, so Raypaste used your usual fallback prompt.",
+            "Website prompts were unavailable for this tab, so Rayvise used your usual fallback prompt.",
             "info",
             4200,
           );
@@ -164,7 +164,7 @@ export function useAICompletionListener() {
 
         if (abortControllerRef.current) {
           abortControllerRef.current.abort();
-          await emit("raypaste://abort-overlay");
+          await emit("rayvise://abort-overlay");
         }
 
         if (hotkey.kind === "pick") {
@@ -208,7 +208,7 @@ export function useAICompletionListener() {
     );
 
     const unlistenPromptPicked = listen<PromptPickedEventPayload>(
-      "raypaste://prompt-picked",
+      "rayvise://prompt-picked",
       async (event) => {
         const p = event.payload;
 
@@ -241,7 +241,7 @@ export function useAICompletionListener() {
 
         if (abortControllerRef.current) {
           abortControllerRef.current.abort();
-          await emit("raypaste://abort-overlay");
+          await emit("rayvise://abort-overlay");
         }
 
         const controller = new AbortController();
@@ -262,7 +262,7 @@ export function useAICompletionListener() {
     );
 
     const unlistenPromptPickCancel = listen<{ targetPid: number }>(
-      "raypaste://prompt-pick-cancel",
+      "rayvise://prompt-pick-cancel",
       async (event) => {
         abortControllerRef.current?.abort();
         abortControllerRef.current = null;
@@ -273,7 +273,7 @@ export function useAICompletionListener() {
     );
 
     const unlistenOutcome = listen<ReviewOutcomePayload>(
-      "raypaste://review-outcome",
+      "rayvise://review-outcome",
       async (event) => {
         const { completionId, finalText, wasApplied, targetPid } =
           event.payload;
@@ -289,7 +289,7 @@ export function useAICompletionListener() {
 
     // User cancelled from review overlay during streaming
     const unlistenStreamCancel = listen<{ targetPid: number }>(
-      "raypaste://stream-cancel",
+      "rayvise://stream-cancel",
       async (event) => {
         abortControllerRef.current?.abort();
         abortControllerRef.current = null;
@@ -302,7 +302,7 @@ export function useAICompletionListener() {
 
     // User cancelled from progress overlay during instant mode
     const unlistenInstantCancel = listen<{ targetPid: number }>(
-      "raypaste://instant-cancel",
+      "rayvise://instant-cancel",
       async (event) => {
         abortControllerRef.current?.abort();
         abortControllerRef.current = null;

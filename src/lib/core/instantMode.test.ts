@@ -33,7 +33,7 @@ vi.mock("@tauri-apps/api/event", () => ({
 vi.mock("#/services/overlayWindows", () => ({
   showProgressOverlay: hoisted.showProgressOverlay,
   showToastOverlay: vi.fn(),
-  INSTANT_PROGRESS_STORAGE_KEY: "raypaste-pending-instant",
+  INSTANT_PROGRESS_STORAGE_KEY: "rayvise-pending-instant",
 }));
 
 vi.mock("#/services/db", () => ({
@@ -83,8 +83,8 @@ describe("runInstantMode", () => {
       }),
     );
     expect(hoisted.emit.mock.calls.map((c) => c[0])).toEqual([
-      "raypaste://completion-saved",
-      "raypaste://instant-done",
+      "rayvise://completion-saved",
+      "rayvise://instant-done",
     ]);
   });
 });

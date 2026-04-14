@@ -8,7 +8,7 @@ macOS app icons are `.icns` files stored inside each `.app` bundle at `Contents/
 
 ### Rust backend (`src-tauri/src/commands/apps.rs`)
 
-**`list_apps`** scans `/Applications` and `~/Applications`. For each app it calls `resolve_icon_paths`, which checks the PNG cache (`~/Library/Caches/raypaste/icons/`) without doing any conversion:
+**`list_apps`** scans `/Applications` and `~/Applications`. For each app it calls `resolve_icon_paths`, which checks the PNG cache (`~/Library/Caches/rayvise/icons/`) without doing any conversion:
 
 - Cache hit → returns `iconPath` (path to cached PNG), `icnsPath` is `None`
 - Cache miss → returns `icnsPath` (path to raw `.icns`), `iconPath` is `None`

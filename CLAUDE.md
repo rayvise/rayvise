@@ -24,11 +24,11 @@ Run a single test file: `pnpm test src/path/to/file.test.tsx`
 
 ### Hotkey pipeline
 
-Main Raypaste hotkey, (default: **Cmd+Ctrl+R**) triggers:
+Main Rayvise hotkey, (default: **Cmd+Ctrl+R**) triggers:
 
-1. **Rust** (`lib.rs`): intercepts via `tauri_plugin_global_shortcut`, captures focused app + selected text on main thread, resolves browser URL off-thread via AppleScript (`commands/browser_url.rs`). Emits `raypaste://hotkey-triggered` with `{ app, selected_text, target_pid, page_url? }`.
+1. **Rust** (`lib.rs`): intercepts via `tauri_plugin_global_shortcut`, captures focused app + selected text on main thread, resolves browser URL off-thread via AppleScript (`commands/browser_url.rs`). Emits `rayvise://hotkey-triggered` with `{ app, selected_text, target_pid, page_url? }`.
 2. **Frontend** (`src/hooks/useAICompletionListener.ts`): `resolveHotkeyPrompt` in `promptsStore`; if multiple website or app candidates apply, opens the prompt-picker overlay; otherwise creates `AbortController` and branches to review or instant mode.
-3. **Persistence**: saves to SQLite, emits `raypaste://completion-saved` to refresh `HistoryPage`.
+3. **Persistence**: saves to SQLite, emits `rayvise://completion-saved` to refresh `HistoryPage`.
 
 **Prompt resolution order** (in `resolveHotkeyPrompt`):
 
@@ -52,7 +52,7 @@ If website prompts exist but no `page_url` is available (Firefox unsupported; Ap
 | `toast`       | `<NotificationPage />` | Hotkey / LLM feedback (`notification-*`, bottom-right; not Sonner) |
 | `prompt-pick` | `<PromptPickPage />`   | Multi-prompt chooser after hotkey                                  |
 
-**Cross-window IPC:** Overlays share localStorage (same origin). For review mode, initial state + streaming chunks are written to `localStorage[REVIEW_STORAGE_KEY]` — this avoids focus-flashing race conditions with Tauri event delivery timing. The prompt picker uses `localStorage[PROMPT_PICK_STORAGE_KEY]`; the main window listens for `raypaste://prompt-picked` / `raypaste://prompt-pick-cancel`. Hotkey-related messages use `showToastOverlay()` in `overlayWindows.ts`, which opens a dedicated `notification-*` window (bottom-right, `focus: false`) so they are visible over other apps; use Sonner `toast` from `#/hooks/useToast` only for in-app UI. Instant mode skips this; main window closes `progressWin.close()` directly.
+**Cross-window IPC:** Overlays share localStorage (same origin). For review mode, initial state + streaming chunks are written to `localStorage[REVIEW_STORAGE_KEY]` — this avoids focus-flashing race conditions with Tauri event delivery timing. The prompt picker uses `localStorage[PROMPT_PICK_STORAGE_KEY]`; the main window listens for `rayvise://prompt-picked` / `rayvise://prompt-pick-cancel`. Hotkey-related messages use `showToastOverlay()` in `overlayWindows.ts`, which opens a dedicated `notification-*` window (bottom-right, `focus: false`) so they are visible over other apps; use Sonner `toast` from `#/hooks/useToast` only for in-app UI. Instant mode skips this; main window closes `progressWin.close()` directly.
 
 Capability files in `src-tauri/capabilities/` control what each window type can do (emit events, drag, close).
 
@@ -74,7 +74,7 @@ Zustand + `persist` (localStorage), all re-exported from `src/stores/index.ts`:
 `src/services/llm/index.ts` — `getLLMClient()` factory (reads `settingsStore` at call time):
 
 - `VITE_DRY_RUN=true` → `dryRunClient` (highest priority; used by Vitest via `vitest.config.ts`)
-- `mode: "api"` → `raypasteApiClient` (throws — not yet implemented)
+- `mode: "api"` → `rayviseApiClient` (throws — not yet implemented)
 - `mode: "direct"` → `cerebrasClient` or `openrouterClient`
 
 All clients implement `.stream(req, apiKey, onChunk, signal)` with `AbortSignal` support.
@@ -117,7 +117,7 @@ vi.mock("@tauri-apps/api/event", () => ({
   },
   emit: vi.fn(),
 }));
-// In test: listeners.get("raypaste://hotkey-triggered")!({ payload: {...} });
+// In test: listeners.get("rayvise://hotkey-triggered")!({ payload: {...} });
 ```
 
 Mock helpers: `src/test/mocks/tauri.ts`. DB is mocked via `vi.mock("#/services/db")`. See `docs/TESTING_STRATEGY.md` for coverage priorities.

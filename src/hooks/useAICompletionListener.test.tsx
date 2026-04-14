@@ -42,7 +42,7 @@ vi.mock("#/services/llm", () => ({
 vi.mock("#/services/overlayWindows", () => ({
   showToastOverlay: vi.fn(),
   showPromptPickOverlay: mockShowPromptPickOverlay,
-  PROMPT_PICK_STORAGE_KEY: "raypaste-pending-prompt-pick",
+  PROMPT_PICK_STORAGE_KEY: "rayvise-pending-prompt-pick",
 }));
 
 vi.mock("#/services/db", () => ({
@@ -82,10 +82,10 @@ describe("useAICompletionListener", () => {
     renderHook(() => useAICompletionListener());
 
     await waitFor(() =>
-      expect(listeners.has("raypaste://hotkey-triggered")).toBe(true),
+      expect(listeners.has("rayvise://hotkey-triggered")).toBe(true),
     );
 
-    listeners.get("raypaste://hotkey-triggered")!({
+    listeners.get("rayvise://hotkey-triggered")!({
       payload: {
         app: "com.apple.Notes",
         selected_text: "hello",
@@ -102,10 +102,10 @@ describe("useAICompletionListener", () => {
     renderHook(() => useAICompletionListener());
 
     await waitFor(() =>
-      expect(listeners.has("raypaste://hotkey-triggered")).toBe(true),
+      expect(listeners.has("rayvise://hotkey-triggered")).toBe(true),
     );
 
-    listeners.get("raypaste://hotkey-triggered")!({
+    listeners.get("rayvise://hotkey-triggered")!({
       payload: {
         app: "com.apple.Notes",
         selected_text: "   ",
@@ -146,11 +146,11 @@ describe("useAICompletionListener", () => {
     renderHook(() => useAICompletionListener());
 
     await waitFor(() =>
-      expect(listeners.has("raypaste://hotkey-triggered")).toBe(true),
+      expect(listeners.has("rayvise://hotkey-triggered")).toBe(true),
     );
 
     const fire = () =>
-      listeners.get("raypaste://hotkey-triggered")!({
+      listeners.get("rayvise://hotkey-triggered")!({
         payload: {
           app: "com.apple.Safari",
           selected_text: "hi",
@@ -162,7 +162,7 @@ describe("useAICompletionListener", () => {
     fire();
     await waitFor(() =>
       expect(showToastOverlay).toHaveBeenCalledWith(
-        "Website prompts were unavailable for this tab, so Raypaste used your usual fallback prompt.",
+        "Website prompts were unavailable for this tab, so Rayvise used your usual fallback prompt.",
         "info",
         4200,
       ),
@@ -179,10 +179,10 @@ describe("useAICompletionListener", () => {
     renderHook(() => useAICompletionListener());
 
     await waitFor(() =>
-      expect(listeners.has("raypaste://hotkey-triggered")).toBe(true),
+      expect(listeners.has("rayvise://hotkey-triggered")).toBe(true),
     );
 
-    listeners.get("raypaste://hotkey-triggered")!({
+    listeners.get("rayvise://hotkey-triggered")!({
       payload: {
         app: "com.apple.Notes",
         selected_text: "hello",
@@ -209,10 +209,10 @@ describe("useAICompletionListener", () => {
     renderHook(() => useAICompletionListener());
 
     await waitFor(() =>
-      expect(listeners.has("raypaste://hotkey-triggered")).toBe(true),
+      expect(listeners.has("rayvise://hotkey-triggered")).toBe(true),
     );
 
-    listeners.get("raypaste://hotkey-triggered")!({
+    listeners.get("rayvise://hotkey-triggered")!({
       payload: {
         app: "com.multi",
         selected_text: "hello",
@@ -249,10 +249,10 @@ describe("useAICompletionListener", () => {
     renderHook(() => useAICompletionListener());
 
     await waitFor(() =>
-      expect(listeners.has("raypaste://hotkey-triggered")).toBe(true),
+      expect(listeners.has("rayvise://hotkey-triggered")).toBe(true),
     );
 
-    listeners.get("raypaste://hotkey-triggered")!({
+    listeners.get("rayvise://hotkey-triggered")!({
       payload: {
         app: "com.apple.Notes",
         selected_text: "hello",
@@ -274,10 +274,10 @@ describe("useAICompletionListener", () => {
     renderHook(() => useAICompletionListener());
 
     await waitFor(() =>
-      expect(listeners.has("raypaste://prompt-picked")).toBe(true),
+      expect(listeners.has("rayvise://prompt-picked")).toBe(true),
     );
 
-    listeners.get("raypaste://prompt-picked")!({
+    listeners.get("rayvise://prompt-picked")!({
       payload: {
         sessionId: "sess-1",
         promptId: "pick1",

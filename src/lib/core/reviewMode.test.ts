@@ -30,7 +30,7 @@ vi.mock("@tauri-apps/api/event", () => ({
 
 vi.mock("#/services/overlayWindows", () => ({
   showReviewOverlay: hoisted.showReviewOverlay,
-  REVIEW_STORAGE_KEY: "raypaste-pending-review",
+  REVIEW_STORAGE_KEY: "rayvise-pending-review",
 }));
 
 vi.mock("#/services/db", () => ({
@@ -78,9 +78,9 @@ describe("runReviewMode", () => {
       }),
     );
     expect(hoisted.emit.mock.calls.map((c) => c[0])).toEqual([
-      "raypaste://stream-chunk",
-      "raypaste://completion-saved",
-      "raypaste://stream-done",
+      "rayvise://stream-chunk",
+      "rayvise://completion-saved",
+      "rayvise://stream-done",
     ]);
   });
 });
