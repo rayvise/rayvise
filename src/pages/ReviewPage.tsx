@@ -117,13 +117,13 @@ export function ReviewPage() {
   // Subscribe to streaming events
   useEffect(() => {
     const unlistenChunk = listen<{ text: string }>(
-      "raypaste://stream-chunk",
+      "rayvise://stream-chunk",
       (e) => {
         setText(e.payload.text);
       },
     );
 
-    const unlistenDone = listen("raypaste://stream-done", () => {
+    const unlistenDone = listen("rayvise://stream-done", () => {
       const stored = loadStorage();
       if (!stored || stored.loading !== false) {
         return;
@@ -139,14 +139,14 @@ export function ReviewPage() {
     });
 
     const unlistenError = listen<{ message: string }>(
-      "raypaste://stream-error",
+      "rayvise://stream-error",
       (e) => {
         setPhase({ kind: "error", message: e.payload.message });
         setTimeout(() => win.close(), 2500);
       },
     );
 
-    const unlistenAbort = listen("raypaste://abort-overlay", () => {
+    const unlistenAbort = listen("rayvise://abort-overlay", () => {
       localStorage.removeItem(REVIEW_STORAGE_KEY);
       win.close();
     });
@@ -173,7 +173,7 @@ export function ReviewPage() {
         targetPid: ph.targetPid,
       });
       localStorage.removeItem(REVIEW_STORAGE_KEY);
-      await emit("raypaste://review-outcome", {
+      await emit("rayvise://review-outcome", {
         completionId: ph.completionId,
         finalText,
         wasApplied: true,
@@ -189,7 +189,7 @@ export function ReviewPage() {
   const handleDismiss = useCallback(async () => {
     localStorage.removeItem(REVIEW_STORAGE_KEY);
     if (phase.kind === "ready") {
-      await emit("raypaste://review-outcome", {
+      await emit("rayvise://review-outcome", {
         completionId: phase.completionId,
         finalText: null,
         wasApplied: false,
@@ -201,7 +201,7 @@ export function ReviewPage() {
 
   const handleCancel = useCallback(async () => {
     localStorage.removeItem(REVIEW_STORAGE_KEY);
-    await emit("raypaste://stream-cancel", {
+    await emit("rayvise://stream-cancel", {
       targetPid: initial?.targetPid ?? 0,
     });
     await win.close();

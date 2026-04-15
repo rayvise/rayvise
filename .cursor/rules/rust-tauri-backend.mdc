@@ -1,5 +1,5 @@
 ---
-description: Rust/Tauri backend conventions for Raypaste
+description: Rust/Tauri backend conventions for Rayvise
 globs: src-tauri/**/*.rs
 alwaysApply: false
 ---

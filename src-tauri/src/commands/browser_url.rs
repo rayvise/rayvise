@@ -158,8 +158,8 @@ mod tests {
     #[test]
     fn normalize_url_rejects_non_http_schemes() {
         assert_eq!(
-            normalize_url("https://raypaste.com/path\n".to_string()),
-            Some("https://raypaste.com/path".to_string())
+            normalize_url("https://rayvise.com/path\n".to_string()),
+            Some("https://rayvise.com/path".to_string())
         );
         assert_eq!(normalize_url("chrome://settings".to_string()), None);
     }

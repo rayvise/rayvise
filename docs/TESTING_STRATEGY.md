@@ -1,6 +1,6 @@
 # Testing strategy
 
-This document describes how automated tests are organized in Raypaste and what they protect. It complements the implementation plan (Vitest, jsdom, React Testing Library).
+This document describes how automated tests are organized in Rayvise and what they protect. It complements the implementation plan (Vitest, jsdom, React Testing Library).
 
 ## Running tests
 
@@ -37,7 +37,7 @@ The Vite `#` path alias matches `vite.config.ts` / `vitest.config.ts`.
 1. **Prompt store** (`src/stores/promptsStore.ts`) — website matching, fallback resolution, exclusive app assignment, `deletePrompt` + rule cleanup + `websitePromptSiteIds` recompute. Covered in `promptsStore.test.ts`.
 2. **Completion pipeline** — `runReviewMode` / `runInstantMode` event order and `saveCompletion` payloads (`reviewMode.test.ts`, `instantMode.test.ts`).
 3. **Hotkey listener** — empty selection, API key, browser + missing URL info toast (`useAICompletionListener.test.tsx`).
-4. **History UI** — refetch on `raypaste://completion-saved` (`HistoryPage.test.ts`).
+4. **History UI** — refetch on `rayvise://completion-saved` (`HistoryPage.test.ts`).
 5. **Pure helpers** — overview math (`helpers.test.ts`).
 
 ## History and usage stats (documented behavior)

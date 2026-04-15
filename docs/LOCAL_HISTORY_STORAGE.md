@@ -1,13 +1,13 @@
 # Local History Storage
 
-Raypaste stores all completion history locally in a SQLite database on your device. Your prompts, inputs, outputs, and performance metrics never leave your machine.
+Rayvise stores all completion history locally in a SQLite database on your device. Your prompts, inputs, outputs, and performance metrics never leave your machine.
 
 The database is managed by Tauri's `tauri-plugin-sql` (IPC bridge to SQLite). Schema is defined in `src/services/db/schema.ts` using Drizzle ORM, and migrations are applied automatically at app startup.
 
 **Database location (macOS):**
 
 ```
-~/Library/Application Support/com.raypaste.raypaste/raypaste.db
+~/Library/Application Support/com.rayvise.rayvise/rayvise.db
 ```
 
 ---
@@ -51,7 +51,7 @@ pnpm tauri dev
 git add src/services/db/schema.ts src/services/db/migrations/
 ```
 
-Migrations are **not** applied by `drizzle-kit`. They are executed automatically the next time Raypaste starts and initializes the database.
+Migrations are **not** applied by `drizzle-kit`. They are executed automatically the next time Rayvise starts and initializes the database.
 
 ### Running migrations locally
 
@@ -61,12 +61,12 @@ To apply pending migrations during development:
 pnpm tauri dev
 ```
 
-On startup, the app opens `raypaste.db`, runs `runMigrations()`, applies any new SQL files, updates `PRAGMA user_version`, and ensures the `usage_stats` `global` row exists.
+On startup, the app opens `rayvise.db`, runs `runMigrations()`, applies any new SQL files, updates `PRAGMA user_version`, and ensures the `usage_stats` `global` row exists.
 
 To verify a migration from a clean slate:
 
 ```bash
-rm ~/Library/Application\ Support/com.raypaste.raypaste/raypaste.db
+rm ~/Library/Application\ Support/com.rayvise.rayvise/rayvise.db
 pnpm tauri dev
 ```
 
@@ -77,7 +77,7 @@ This recreates the database from migration 0 and reapplies the full migration se
 To wipe the DB and start fresh from migration 0:
 
 ```bash
-rm ~/Library/Application\ Support/com.raypaste.raypaste/raypaste.db
+rm ~/Library/Application\ Support/com.rayvise.rayvise/rayvise.db
 ```
 
 On next app launch, all migrations will re-run against the empty file.
@@ -101,7 +101,7 @@ On next app launch, all migrations will re-run against the empty file.
 
 - **Left panel** — searchable completion list (up to 200 entries). Each card shows app, prompt name, input preview, status icon (applied / dismissed / error), and relative time. Click to open a detail dialog; hover to reveal a per-entry delete button.
 - **Right panel** — overview stats (total completions, avg tokens/sec, avg completion time, most-used prompt) and per-prompt usage counts. Bottom actions: _Clear history_ (deletes log entries, preserves stats) and _Reset all data_ (deletes everything).
-- Auto-refreshes on `raypaste://completion-saved` events.
+- Auto-refreshes on `rayvise://completion-saved` events.
 
 ---
 

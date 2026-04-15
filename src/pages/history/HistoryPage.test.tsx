@@ -77,14 +77,14 @@ describe("HistoryPage", () => {
     ]);
   });
 
-  it("refetches when raypaste://completion-saved fires", async () => {
+  it("refetches when rayvise://completion-saved fires", async () => {
     render(<HistoryPage />);
 
     await waitFor(() =>
       expect(dbMocks.listCompletions).toHaveBeenCalledTimes(1),
     );
 
-    const handler = listeners.get("raypaste://completion-saved");
+    const handler = listeners.get("rayvise://completion-saved");
     expect(handler).toBeDefined();
     await handler!({});
 

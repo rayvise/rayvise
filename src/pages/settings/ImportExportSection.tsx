@@ -24,7 +24,7 @@ export function ImportExportSection() {
     const content = JSON.stringify(payload, null, 2);
     try {
       const saved = await invoke<boolean>("save_json_file", {
-        defaultName: `raypaste-prompts-${dateStr}.json`,
+        defaultName: `rayvise-prompts-${dateStr}.json`,
         content,
       });
       if (saved) {

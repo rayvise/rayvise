@@ -167,9 +167,9 @@ export function SettingsPage() {
               "border-border/50 bg-muted/20 text-muted-foreground opacity-60",
             )}
           >
-            <p className="text-sm font-medium">Via Raypaste</p>
+            <p className="text-sm font-medium">Via Rayvise</p>
             <p className="text-muted-foreground mt-1 text-xs">
-              Log in with your Raypaste account, and get personalized
+              Log in with your Rayvise account, and get personalized
               self-learning AI responses.
             </p>
             <span className="bg-muted text-muted-foreground absolute top-2 right-2 rounded px-1.5 py-0.5 text-[10px]">

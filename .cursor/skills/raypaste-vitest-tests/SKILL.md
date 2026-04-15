@@ -1,9 +1,9 @@
 ---
-name: raypaste-vitest-tests
-description: Adds and extends Vitest unit tests for the Raypaste Tauri (React/TypeScript) frontend with jsdom, Testing Library, and Tauri mocks. Use when writing or refactoring tests, improving coverage, or when the user mentions Vitest, Testing Library, frontend tests, mocks, or test setup in this repository.
+name: rayvise-vitest-tests
+description: Adds and extends Vitest unit tests for the Rayvise Tauri (React/TypeScript) frontend with jsdom, Testing Library, and Tauri mocks. Use when writing or refactoring tests, improving coverage, or when the user mentions Vitest, Testing Library, frontend tests, mocks, or test setup in this repository.
 ---
 
-# Raypaste frontend tests (Vitest)
+# Rayvise frontend tests (Vitest)
 
 ## Commands
 
@@ -55,7 +55,7 @@ Align new tests with these when choosing what to cover first:
 1. **`promptsStore`** — website matching, fallback resolution, exclusive app assignment, deletes + rule cleanup + `websitePromptSiteIds`.
 2. **Completion pipeline** — `runReviewMode` / `runInstantMode` ordering and `saveCompletion`-related payloads.
 3. **`useAICompletionListener`** — selection empty, API key, browser without URL + info toast behavior.
-4. **History UI** — reactions to `raypaste://completion-saved` and DB-shaped mocks.
+4. **History UI** — reactions to `rayvise://completion-saved` and DB-shaped mocks.
 5. **Pure helpers** — small focused tests.
 
 ## CI and scope

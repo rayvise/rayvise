@@ -161,7 +161,7 @@ export function ExportDialog({ open, onOpenChange }: ExportDialogProps) {
     try {
       const dateStr = new Date().toISOString().slice(0, 10);
       const saved = await invoke<boolean>("save_json_file", {
-        defaultName: `raypaste-prompts-${dateStr}.json`,
+        defaultName: `rayvise-prompts-${dateStr}.json`,
         content: jsonPreview,
       });
       if (saved) {

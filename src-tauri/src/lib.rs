@@ -38,7 +38,7 @@ pub fn run() {
                                         commands::browser_url::try_get_active_tab_url(&bundle_id);
                                     app_for_emit
                                         .emit(
-                                            "raypaste://hotkey-triggered",
+                                            "rayvise://hotkey-triggered",
                                             HotkeyPayload {
                                                 app: bundle_id,
                                                 selected_text: text,

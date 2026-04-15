@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Raypaste",
+  "productName": "Rayvise",
   "version": "0.3.2",
-  "identifier": "com.raypaste.raypaste",
+  "identifier": "com.rayvise.rayvise",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Raypaste",
+        "title": "Rayvise",
         "width": 1200,
         "height": 800,
         "minWidth": 900,
@@ -31,11 +31,11 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "publisher": "Raypaste",
+    "publisher": "Rayvise",
     "category": "Productivity",
     "shortDescription": "An app for fast AI completions anywhere on your computer.",
     "longDescription": "An app for fast and customizable AI completions in any input on any application on your computer.",
-    "copyright": "Copyright © 2026 Raypaste. All rights reserved.",
+    "copyright": "Copyright © 2026 Rayvise. All rights reserved.",
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

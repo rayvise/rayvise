@@ -22,8 +22,8 @@ export function WebsitePromptSiteIcon({
       className={cn(
         "bg-muted/40 text-primary border-muted/90 flex h-9 w-9 shrink-0 items-center justify-center rounded-md border",
         className,
-        // Raypaste primary green color is too light and doesn't provide enough contrast in dark mode against lighter background
-        domain.includes("raypaste") ? "dark:bg-white/20" : "dark:bg-white/90",
+        // Rayvise primary green color is too light and doesn't provide enough contrast in dark mode against lighter background
+        domain.includes("rayvise") ? "dark:bg-white/20" : "dark:bg-white/90",
       )}
       aria-label={domain || "Website icon"}
     >

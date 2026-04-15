@@ -130,7 +130,7 @@ pub async fn fetch_website_icon(request: FetchWebsiteIconRequest) -> Option<Stri
     let client = reqwest::Client::builder()
         .redirect(reqwest::redirect::Policy::limited(5))
         .timeout(REQUEST_TIMEOUT)
-        .user_agent("Raypaste/0.2")
+        .user_agent("Rayvise/0.2")
         .build()
         .ok()?;
 

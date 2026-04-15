@@ -1,6 +1,6 @@
 # Model Provider Compliance
 
-Raypaste direct mode intentionally exposes a provider-scoped model list instead of one shared catalog.
+Rayvise direct mode intentionally exposes a provider-scoped model list instead of one shared catalog.
 
 ## Current direct-mode behavior
 
@@ -11,16 +11,16 @@ Raypaste direct mode intentionally exposes a provider-scoped model list instead 
 
 ## How filtering works
 
-- When the active provider changes, Raypaste keeps the current model only if that provider explicitly allows it.
-- If the selected model is not allowed for the newly selected provider, Raypaste automatically falls back to that provider's default model.
-- When persisted settings are loaded, Raypaste normalizes both the provider and model against the current registry.
+- When the active provider changes, Rayvise keeps the current model only if that provider explicitly allows it.
+- If the selected model is not allowed for the newly selected provider, Rayvise automatically falls back to that provider's default model.
+- When persisted settings are loaded, Rayvise normalizes both the provider and model against the current registry.
 - Label lookup is provider-aware so shared model ids can still render provider-specific names in the UI.
 
 ## Why this exists
 
 - Provider access is not uniform across OpenRouter, Cerebras, and OpenAI.
 - A shared model list makes it easy to save an invalid provider/model combination and fail later at request time.
-- Provider-scoped filtering keeps the UI compliant with the models Raypaste currently provisions and validates.
+- Provider-scoped filtering keeps the UI compliant with the models Rayvise currently provisions and validates.
 
 ## Updating the registry
 

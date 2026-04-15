@@ -49,7 +49,7 @@ export function PromptPickPage() {
         page_url: session.page_url,
         candidates: session.candidates,
       };
-      await emit("raypaste://prompt-picked", payload);
+      await emit("rayvise://prompt-picked", payload);
       localStorage.removeItem(PROMPT_PICK_STORAGE_KEY);
       await win.close();
     },
@@ -59,7 +59,7 @@ export function PromptPickPage() {
   const cancel = useCallback(async () => {
     const pid = session?.targetPid ?? 0;
     localStorage.removeItem(PROMPT_PICK_STORAGE_KEY);
-    await emit("raypaste://prompt-pick-cancel", { targetPid: pid });
+    await emit("rayvise://prompt-pick-cancel", { targetPid: pid });
     await win.close();
   }, [session, win]);
 
@@ -114,7 +114,7 @@ export function PromptPickPage() {
   );
 
   useEffect(() => {
-    const unlisten = listen("raypaste://abort-overlay", () => {
+    const unlisten = listen("rayvise://abort-overlay", () => {
       localStorage.removeItem(PROMPT_PICK_STORAGE_KEY);
       void win.close();
     });

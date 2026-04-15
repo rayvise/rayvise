@@ -25,7 +25,7 @@ export function ProgressPage() {
         localStorage.removeItem(INSTANT_PROGRESS_STORAGE_KEY);
         // Echo the original target PID back to the main listener so canceling
         // instant mode restores focus to the app the user came from.
-        emit("raypaste://instant-cancel", {
+        emit("rayvise://instant-cancel", {
           targetPid: progressState?.targetPid ?? 0,
         }).catch(() => {});
         win.close();
@@ -41,8 +41,8 @@ export function ProgressPage() {
       win.close();
     };
 
-    const unlistenDone = listen("raypaste://instant-done", handleClose);
-    const unlistenAbort = listen("raypaste://abort-overlay", handleClose);
+    const unlistenDone = listen("rayvise://instant-done", handleClose);
+    const unlistenAbort = listen("rayvise://abort-overlay", handleClose);
 
     return () => {
       unlistenDone.then((fn) => fn());

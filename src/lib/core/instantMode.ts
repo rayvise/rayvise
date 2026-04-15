@@ -12,7 +12,7 @@ import { ModeParams, isAbortError } from "./types";
 // Instant mode is used when the user wants to apply the completion to the target app immediately.
 export async function runInstantMode(p: ModeParams) {
   // Re-activate the target app before showing overlay — creating a WebviewWindow
-  // briefly brings the Raypaste application to the foreground on macOS.
+  // briefly brings the Rayvise application to the foreground on macOS.
   await invoke("activate_app", { targetPid: p.target_pid }).catch(() => {});
 
   localStorage.setItem(
@@ -32,7 +32,7 @@ export async function runInstantMode(p: ModeParams) {
     if (progressWin) {
       progressWin.close().catch(() => {});
     }
-    await emit("raypaste://instant-done");
+    await emit("rayvise://instant-done");
   };
 
   try {
@@ -85,9 +85,9 @@ export async function runInstantMode(p: ModeParams) {
       model: p.model,
       provider: p.provider,
     });
-    await emit("raypaste://completion-saved");
+    await emit("rayvise://completion-saved");
     // Re-activate the target app before closing the overlay — when the overlay
-    // window closes, macOS would otherwise focus the Raypaste main window.
+    // window closes, macOS would otherwise focus the Rayvise main window.
     await invoke("activate_app", { targetPid: p.target_pid }).catch(() => {});
     await finishProgressOverlay();
   } catch (err) {

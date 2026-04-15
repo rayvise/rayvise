@@ -75,9 +75,9 @@ export type PendingReviewStorage =
       durationMs: number;
     };
 
-export const REVIEW_STORAGE_KEY = "raypaste-pending-review";
-export const INSTANT_PROGRESS_STORAGE_KEY = "raypaste-pending-instant";
-export const PROMPT_PICK_STORAGE_KEY = "raypaste-pending-prompt-pick";
+export const REVIEW_STORAGE_KEY = "rayvise-pending-review";
+export const INSTANT_PROGRESS_STORAGE_KEY = "rayvise-pending-instant";
+export const PROMPT_PICK_STORAGE_KEY = "rayvise-pending-prompt-pick";
 
 export interface PendingPromptPickCandidate {
   id: string;
@@ -163,7 +163,7 @@ export function showProgressOverlay(): WebviewWindow | null {
       shadow: false,
       alwaysOnTop: true,
       skipTaskbar: true,
-      // Match review overlay: without focus, macOS can activate Raypaste but
+      // Match review overlay: without focus, macOS can activate Rayvise but
       // leave keyboard focus on the main window instead of this overlay.
       focus: true,
       x,

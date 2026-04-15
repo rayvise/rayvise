@@ -1,6 +1,6 @@
-# Contributing to Raypaste
+# Contributing to Rayvise
 
-Thank you for your interest in contributing! Raypaste is an MIT-licensed open source project and all contributions are welcome — code, documentation, bug reports, and feature ideas.
+Thank you for your interest in contributing! Rayvise is an MIT-licensed open source project and all contributions are welcome — code, documentation, bug reports, and feature ideas.
 
 ## Table of Contents
 
@@ -38,7 +38,7 @@ Before opening a new issue, search existing issues to avoid duplicates bug repor
 
 Include in your bug report:
 - **OS and version** (macOS, Windows, Linux + version)
-- **Raypaste version** (from the app or `package.json`)
+- **Rayvise version** (from the app or `package.json`)
 - **Steps to reproduce**
 - **Expected vs. actual behavior**
 - **Logs or screenshots** if applicable
@@ -60,7 +60,7 @@ For large features, open an issue for discussion before starting a pull request 
 
 See [DEV_GETTING_STARTED.md](DEV_GETTING_STARTED.md) for full setup instructions.
 
-Raypaste is a [Tauri 2.0](https://v2.tauri.app) app and runs on **macOS, Windows, and Linux**. Make sure you have the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) installed for your platform before running locally.
+Rayvise is a [Tauri 2.0](https://v2.tauri.app) app and runs on **macOS, Windows, and Linux**. Make sure you have the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) installed for your platform before running locally.
 
 Key commands:
 
@@ -139,4 +139,4 @@ chore: bump tauri to 2.1
 
 ## License
 
-By contributing to Raypaste, you agree that your contributions will be licensed under the [MIT License](../LICENSE).
+By contributing to Rayvise, you agree that your contributions will be licensed under the [MIT License](../LICENSE).
