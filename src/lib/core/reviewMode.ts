@@ -2,10 +2,28 @@ import { emit } from "@tauri-apps/api/event";
 import { getLLMClient } from "#/services/llm";
 import {
   showReviewOverlay,
+  showToastOverlay,
   REVIEW_STORAGE_KEY,
 } from "#/services/overlayWindows";
 import { saveCompletion } from "#/services/db";
 import { ModeParams, isAbortError } from "./types";
+import { LLMProvider } from "#/services/llm/types";
+
+function toReviewErrorToastMessage(
+  errorMessage: string,
+  provider: string,
+): string {
+  if (
+    provider === "local" &&
+    /(Local provider request failed|Could not connect to Local provider)/i.test(
+      errorMessage,
+    )
+  ) {
+    return "Could not connect to Ollama. Start Ollama and try again.";
+  }
+
+  return `Error: ${errorMessage}`;
+}
 
 // Review mode is used when the user wants to review the completion before applying it to the target app.
 export async function runReviewMode(p: ModeParams) {
@@ -34,7 +52,7 @@ export async function runReviewMode(p: ModeParams) {
         dryRunMetadata: {
           promptName: p.prompt.name,
           pageUrl: p.pageUrl,
-          provider: p.provider,
+          provider: p.provider as LLMProvider,
         },
       },
       p.apiKey,
@@ -106,6 +124,11 @@ export async function runReviewMode(p: ModeParams) {
     }
 
     const errorMessage = err instanceof Error ? err.message : String(err);
+    showToastOverlay(
+      toReviewErrorToastMessage(errorMessage, p.provider),
+      "error",
+      4500,
+    );
     await emit("rayvise://stream-error", { message: errorMessage });
     localStorage.removeItem(REVIEW_STORAGE_KEY);
 
