@@ -46,6 +46,7 @@ export async function runInstantMode(p: ModeParams) {
         dryRunMetadata: {
           promptName: p.prompt.name,
           pageUrl: p.pageUrl,
+          provider: p.provider,
         },
       },
       p.apiKey,

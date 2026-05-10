@@ -1,3 +1,4 @@
+import { getProviderLabel } from "./models";
 import type { LLMClient, LLMRequest } from "./types";
 
 export const dryRunClient: LLMClient = {
@@ -26,6 +27,13 @@ function getDryRunText(req: LLMRequest) {
     [...req.messages].reverse().find((m) => m.role === "user")?.content ?? "";
   const metadata = req.dryRunMetadata;
   const parts: string[] = ["[DRY RUN]"];
+  if (metadata?.provider) {
+    parts.push(`Provider: ${getProviderLabel(metadata.provider)}`);
+  }
+  const model = req.model.trim();
+  if (model) {
+    parts.push(`Model: ${model}`);
+  }
   const name = metadata?.promptName?.trim();
   if (name) {
     parts.push(`Prompt: ${name}`);

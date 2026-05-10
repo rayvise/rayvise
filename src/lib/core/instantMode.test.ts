@@ -70,6 +70,13 @@ describe("runInstantMode", () => {
 
     expect(hoisted.showProgressOverlay).toHaveBeenCalled();
     expect(hoisted.stream).toHaveBeenCalled();
+    expect(hoisted.stream.mock.calls[0]?.[0]).toEqual(
+      expect.objectContaining({
+        dryRunMetadata: expect.objectContaining({
+          provider: "openrouter",
+        }),
+      }),
+    );
     expect(hoisted.invoke).toHaveBeenCalledWith("write_text_back", {
       text: "done",
       targetPid: 99,
