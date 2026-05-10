@@ -1,4 +1,5 @@
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
+import { Window, getCurrentWindow } from "@tauri-apps/api/window";
 import { toast } from "#/hooks/useToast";
 import { OVERLAY } from "#/lib/overlay";
 import type { PromptSource } from "#/stores";
@@ -115,6 +116,20 @@ export interface PendingInstantProgressStorage {
  * Open the review overlay window. The caller must write initial state to
  * localStorage under REVIEW_STORAGE_KEY before calling this.
  */
+function hideMainWindow(): void {
+  // Fast path: this function is called from the main window context.
+  // Hiding it immediately reduces macOS flash before async lookups resolve.
+  const current = getCurrentWindow();
+  if (current.label === "main") {
+    void current.hide().catch(() => {});
+    return;
+  }
+
+  void Window.getByLabel("main")
+    .then((main) => main?.hide())
+    .catch(() => {});
+}
+
 export function showReviewOverlay(): WebviewWindow | null {
   const width = 600;
   const height = 700;
@@ -122,6 +137,10 @@ export function showReviewOverlay(): WebviewWindow | null {
   const y = Math.round((window.screen.availHeight - height) / 2);
 
   try {
+    // Keep the source app, such as Chrome, active after the global hotkey.
+    // The review overlay should be visible by itself, without the main app
+    // window appearing or stealing focus.
+    hideMainWindow();
     const win = new WebviewWindow(`review-${Date.now()}`, {
       url: `/?overlay=${OVERLAY.review}`,
       width,
@@ -135,9 +154,15 @@ export function showReviewOverlay(): WebviewWindow | null {
       x,
       y,
     });
-    // `focus: true` is not always enough on macOS after the app activates; nudge
-    // again once the window exists so ⌘↩ / Esc reach this webview.
+    // Tauri/macOS may still transiently surface the main window while creating
+    // a child webview. Re-hide and explicitly focus the review window on
+    // creation and the next tick so Cmd/Ctrl+Enter targets this overlay.
+    void win.once("tauri://created", () => {
+      hideMainWindow();
+      void win.setFocus().catch(() => {});
+    });
     queueMicrotask(() => {
+      hideMainWindow();
       void win.setFocus().catch(() => {});
     });
     return win;

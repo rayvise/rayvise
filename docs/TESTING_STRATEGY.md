@@ -37,8 +37,19 @@ The Vite `#` path alias matches `vite.config.ts` / `vitest.config.ts`.
 1. **Prompt store** (`src/stores/promptsStore.ts`) — website matching, fallback resolution, exclusive app assignment, `deletePrompt` + rule cleanup + `websitePromptSiteIds` recompute. Covered in `promptsStore.test.ts`.
 2. **Completion pipeline** — `runReviewMode` / `runInstantMode` event order and `saveCompletion` payloads (`reviewMode.test.ts`, `instantMode.test.ts`).
 3. **Hotkey listener** — empty selection, API key, browser + missing URL info toast (`useAICompletionListener.test.tsx`).
-4. **History UI** — refetch on `rayvise://completion-saved` (`HistoryPage.test.ts`).
-5. **Pure helpers** — overview math (`helpers.test.ts`).
+4. **Overlay focus + ownership** — review overlay must take keyboard focus (`Cmd/Ctrl+Enter` applies in Rayvise, not source app), while keeping the main window hidden (`overlayWindows.test.ts`).
+5. **History UI** — refetch on `rayvise://completion-saved` (`HistoryPage.test.ts`).
+6. **Pure helpers** — overview math (`helpers.test.ts`).
+
+## Review mode regression contract
+
+The review-mode UX should preserve this sequence:
+
+1. Review overlay opens centered and visible on top.
+2. Rayvise main window stays hidden (no flash).
+3. Review overlay becomes keyboard-focused so `Cmd/Ctrl+Enter` applies from the overlay, not the source app (e.g. Chrome).
+
+When changing overlay creation or focus logic in `src/services/overlayWindows.ts` or `src/pages/ReviewPage.tsx`, update tests first to keep this contract explicit.
 
 ## History and usage stats (documented behavior)
 

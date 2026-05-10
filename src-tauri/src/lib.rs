@@ -1,5 +1,5 @@
 use serde::Serialize;
-use tauri::Emitter;
+use tauri::{Emitter, Manager, RunEvent};
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
 
 mod commands;
@@ -69,6 +69,16 @@ pub fn run() {
             commands::text::write_text_back,
             commands::file_dialog::save_json_file,
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .build(tauri::generate_context!())
+        .expect("error while building tauri application")
+        .run(|app, event| {
+            if let RunEvent::Reopen { .. } = event {
+                // When Rayvise is activated from Dock/Cmd-Tab after review mode
+                // has hidden the main window, restore and focus it.
+                if let Some(main) = app.get_webview_window("main") {
+                    let _ = main.show();
+                    let _ = main.set_focus();
+                }
+            }
+        });
 }

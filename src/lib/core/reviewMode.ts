@@ -9,11 +9,6 @@ import { ModeParams, isAbortError } from "./types";
 
 // Review mode is used when the user wants to review the completion before applying it to the target app.
 export async function runReviewMode(p: ModeParams) {
-  // Do not activate the target app here: foregrounding Chrome (etc.) before the
-  // review webview opens leaves keyboard focus outside Rayvise, so shortcuts
-  // like ⌘↩ on the review window never fire. Focus returns to the target on
-  // dismiss / apply / cancel via existing listeners.
-
   // Write loading state to localStorage, then open the review window
   localStorage.setItem(
     REVIEW_STORAGE_KEY,
