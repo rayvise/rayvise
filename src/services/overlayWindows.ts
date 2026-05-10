@@ -1,5 +1,5 @@
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
-import { Window } from "@tauri-apps/api/window";
+import { Window, getCurrentWindow } from "@tauri-apps/api/window";
 import { toast } from "#/hooks/useToast";
 import { OVERLAY } from "#/lib/overlay";
 import type { PromptSource } from "#/stores";
@@ -116,6 +116,20 @@ export interface PendingInstantProgressStorage {
  * Open the review overlay window. The caller must write initial state to
  * localStorage under REVIEW_STORAGE_KEY before calling this.
  */
+function hideMainWindow(): void {
+  // Fast path: this function is called from the main window context.
+  // Hiding it immediately reduces macOS flash before async lookups resolve.
+  const current = getCurrentWindow();
+  if (current.label === "main") {
+    void current.hide().catch(() => {});
+    return;
+  }
+
+  void Window.getByLabel("main")
+    .then((main) => main?.hide())
+    .catch(() => {});
+}
+
 export function showReviewOverlay(): WebviewWindow | null {
   const width = 600;
   const height = 700;
@@ -126,9 +140,7 @@ export function showReviewOverlay(): WebviewWindow | null {
     // Keep the source app, such as Chrome, active after the global hotkey.
     // The review overlay should be visible by itself, without the main app
     // window appearing or stealing focus.
-    void Window.getByLabel("main")
-      .then((main) => main?.hide())
-      .catch(() => {});
+    hideMainWindow();
     const win = new WebviewWindow(`review-${Date.now()}`, {
       url: `/?overlay=${OVERLAY.review}`,
       width,
@@ -138,16 +150,20 @@ export function showReviewOverlay(): WebviewWindow | null {
       shadow: false,
       alwaysOnTop: true,
       skipTaskbar: true,
-      focus: false,
+      focus: true,
       x,
       y,
     });
+    // Tauri/macOS may still transiently surface the main window while creating
+    // a child webview. Re-hide and explicitly focus the review window on
+    // creation and the next tick so Cmd/Ctrl+Enter targets this overlay.
+    void win.once("tauri://created", () => {
+      hideMainWindow();
+      void win.setFocus().catch(() => {});
+    });
     queueMicrotask(() => {
-      // Hide again after creation because macOS/Tauri can briefly surface the
-      // main window while adding a child overlay.
-      void Window.getByLabel("main")
-        .then((main) => main?.hide())
-        .catch(() => {});
+      hideMainWindow();
+      void win.setFocus().catch(() => {});
     });
     return win;
   } catch {

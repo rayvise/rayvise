@@ -42,9 +42,9 @@ describe("ReviewPage", () => {
     );
   });
 
-  it("does not steal focus and applies only once for a Cmd/Ctrl+Enter key press", async () => {
+  it("focuses the review window and applies only once for a Cmd/Ctrl+Enter key press", async () => {
     render(<ReviewPage />);
-    expect(mockSetFocus).not.toHaveBeenCalled();
+    expect(mockSetFocus).toHaveBeenCalled();
 
     fireEvent.keyDown(document, {
       key: "Enter",

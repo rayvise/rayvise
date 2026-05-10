@@ -112,6 +112,15 @@ export function ReviewPage() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    // Re-focus after mount to ensure keyboard shortcuts are captured by this
+    // overlay, even if the source app was still active while the window opened.
+    void win.setFocus().catch(() => {});
+    queueMicrotask(() => {
+      void win.setFocus().catch(() => {});
+    });
+  }, [win]);
+
   // Subscribe to streaming events
   useEffect(() => {
     const unlistenChunk = listen<{ text: string }>(
