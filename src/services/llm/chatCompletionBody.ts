@@ -21,7 +21,7 @@ export function chatCompletionBody(
 ) {
   const { dryRunMetadata, messages, ...rest } = req;
   void dryRunMetadata;
-  return {
+  const body = {
     ...rest,
     messages: messages.map((message) => ({
       ...message,
@@ -29,4 +29,14 @@ export function chatCompletionBody(
     })),
     stream,
   };
+
+  if (provider === LLM_PROVIDER.Local) {
+    return {
+      ...body,
+      reasoning_effort: "none",
+      reasoning: { effort: "none" },
+    };
+  }
+
+  return body;
 }

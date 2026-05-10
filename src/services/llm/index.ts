@@ -2,6 +2,7 @@ import { useSettingsStore } from "#/stores";
 import { openrouterClient } from "./openrouter";
 import { cerebrasClient } from "./cerebras";
 import { openaiClient } from "./openai";
+import { localClient } from "./local";
 import { rayviseApiClient } from "./rayvise-api";
 import { dryRunClient } from "./dryRun";
 import type { LLMClient } from "./types";
@@ -24,6 +25,8 @@ export function getLLMClient(): LLMClient {
       return cerebrasClient;
     case LLM_PROVIDER.OpenAI:
       return openaiClient;
+    case LLM_PROVIDER.Local:
+      return localClient;
     case LLM_PROVIDER.OpenRouter:
     default:
       return openrouterClient;
@@ -35,18 +38,34 @@ export function getApiKey(): string {
     return "dry-run";
   }
 
-  const { provider, openrouterApiKey, cerebrasApiKey, openaiApiKey } =
-    useSettingsStore.getState();
+  const {
+    provider,
+    openrouterApiKey,
+    cerebrasApiKey,
+    openaiApiKey,
+    localApiKey,
+  } = useSettingsStore.getState();
 
   switch (provider) {
     case LLM_PROVIDER.Cerebras:
       return cerebrasApiKey;
     case LLM_PROVIDER.OpenAI:
       return openaiApiKey;
+    case LLM_PROVIDER.Local:
+      return localApiKey;
     case LLM_PROVIDER.OpenRouter:
     default:
       return openrouterApiKey;
   }
+}
+
+export function providerRequiresApiKey(): boolean {
+  if (DRY_RUN) {
+    return false;
+  }
+
+  const { provider } = useSettingsStore.getState();
+  return provider !== LLM_PROVIDER.Local;
 }
 
 export type { LLMClient, LLMRequest, LLMMessage } from "./types";

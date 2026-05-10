@@ -42,6 +42,18 @@ describe("provider model registry", () => {
     ]);
   });
 
+  it("includes Local as a direct provider with a free-form default model", () => {
+    expect(getProviderModelOptions(LLM_PROVIDER.Local)).toEqual([
+      { value: "llama3.2", label: "llama3.2" },
+    ]);
+    expect(normalizeProviderModel(LLM_PROVIDER.Local, "custom:model")).toBe(
+      "custom:model",
+    );
+    expect(normalizeProviderModel(LLM_PROVIDER.Local, "   ")).toBe(
+      getDefaultModelForProvider(LLM_PROVIDER.Local),
+    );
+  });
+
   it("normalizes invalid provider-model combinations to the provider default", () => {
     expect(
       normalizeProviderModel(LLM_PROVIDER.OpenAI, "openai/gpt-oss-120b"),

@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { getCompletionText, parseSSEStream } from "./streaming";
+import {
+  createThinkBlockStripper,
+  getCompletionText,
+  parseSSEStream,
+} from "./streaming";
 
 function streamFromLines(lines: string[]): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder();
@@ -46,5 +50,13 @@ describe("streaming compatibility parsing", () => {
     );
 
     expect(seen).toBe("Hello world");
+  });
+
+  it("strips think blocks across chunk boundaries", () => {
+    const stripper = createThinkBlockStripper();
+
+    expect(stripper.push("Hello <thi")).toBe("Hello ");
+    expect(stripper.push("nk>hidden</think> world")).toBe(" world");
+    expect(stripper.flush()).toBe("");
   });
 });

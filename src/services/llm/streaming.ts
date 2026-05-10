@@ -89,3 +89,73 @@ export async function parseSSEStream(
     }
   }
 }
+
+function longestSuffixPrefix(value: string, token: string): string {
+  const max = Math.min(value.length, token.length - 1);
+
+  for (let length = max; length > 0; length -= 1) {
+    const suffix = value.slice(-length).toLowerCase();
+    if (token.toLowerCase().startsWith(suffix)) {
+      return value.slice(-length);
+    }
+  }
+
+  return "";
+}
+
+function findTag(value: string, tag: string): number {
+  return value.toLowerCase().indexOf(tag.toLowerCase());
+}
+
+export function createThinkBlockStripper() {
+  const openTag = "<think>";
+  const closeTag = "</think>";
+  let buffer = "";
+  let insideThink = false;
+
+  return {
+    push(chunk: string): string {
+      buffer += chunk;
+      let output = "";
+
+      while (buffer) {
+        if (insideThink) {
+          const closeIndex = findTag(buffer, closeTag);
+          if (closeIndex === -1) {
+            buffer = longestSuffixPrefix(buffer, closeTag);
+            break;
+          }
+
+          buffer = buffer.slice(closeIndex + closeTag.length);
+          insideThink = false;
+          continue;
+        }
+
+        const openIndex = findTag(buffer, openTag);
+        if (openIndex === -1) {
+          const retained = longestSuffixPrefix(buffer, openTag);
+          output += buffer.slice(0, buffer.length - retained.length);
+          buffer = retained;
+          break;
+        }
+
+        output += buffer.slice(0, openIndex);
+        buffer = buffer.slice(openIndex + openTag.length);
+        insideThink = true;
+      }
+
+      return output;
+    },
+
+    flush(): string {
+      if (insideThink) {
+        buffer = "";
+        return "";
+      }
+
+      const output = buffer;
+      buffer = "";
+      return output;
+    },
+  };
+}

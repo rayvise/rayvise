@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { ChevronRight, Eye, EyeOff, Monitor, Moon, Sun } from "lucide-react";
+import {
+  ChevronRight,
+  Eye,
+  EyeOff,
+  Loader2,
+  Monitor,
+  Moon,
+  RefreshCw,
+  Sun,
+} from "lucide-react";
 import { ImportExportSection } from "./settings/ImportExportSection";
 import {
   Collapsible,
@@ -26,6 +35,7 @@ import {
   ComboboxLabel,
 } from "#/components/ui/combobox";
 import { Button } from "#/components/ui/button";
+import { listLocalModels } from "#/services/llm/local";
 import {
   DIRECT_PROVIDER_OPTIONS,
   getModelLabel,
@@ -41,6 +51,9 @@ export function SettingsPage() {
     openrouterApiKey,
     cerebrasApiKey,
     openaiApiKey,
+    localBaseUrl,
+    localApiKey,
+    localModelOptions,
     model,
     reviewMode,
     themeMode,
@@ -49,12 +62,27 @@ export function SettingsPage() {
     setOpenrouterApiKey,
     setCerebrasApiKey,
     setOpenaiApiKey,
+    setLocalBaseUrl,
+    setLocalApiKey,
+    setLocalModelOptions,
     setModel,
     setReviewMode,
     setThemeMode,
   } = useSettingsStore();
 
-  const modelOptions = getProviderModelOptions(provider);
+  const baseModelOptions = getProviderModelOptions(provider);
+  const modelOptions =
+    provider === LLM_PROVIDER.Local
+      ? Array.from(
+          new Set([
+            ...baseModelOptions.map((option) => option.value),
+            ...localModelOptions,
+            model,
+          ]),
+        )
+          .filter(Boolean)
+          .map((value) => ({ value, label: value }))
+      : baseModelOptions;
 
   const { prompts, defaultPromptId, setDefaultPrompt } = usePromptsStore();
   const { apps, hiddenAppBundleIds, unhideApp } = useAppsStore();
@@ -63,6 +91,10 @@ export function SettingsPage() {
   const [promptQuery, setPromptQuery] = useState("");
   const [modelQuery, setModelQuery] = useState("");
   const [hiddenAppsOpen, setHiddenAppsOpen] = useState(false);
+  const [localModelsLoading, setLocalModelsLoading] = useState(false);
+  const [localModelsMessage, setLocalModelsMessage] = useState<string | null>(
+    null,
+  );
   const promptSearch = useComboboxSearchDirty();
   const modelSearch = useComboboxSearchDirty();
   const hiddenApps = apps.filter((app) =>
@@ -91,13 +123,35 @@ export function SettingsPage() {
       ? cerebrasApiKey
       : provider === LLM_PROVIDER.OpenAI
         ? openaiApiKey
-        : openrouterApiKey;
+        : provider === LLM_PROVIDER.Local
+          ? localApiKey
+          : openrouterApiKey;
   const setCurrentKey =
     provider === LLM_PROVIDER.Cerebras
       ? setCerebrasApiKey
       : provider === LLM_PROVIDER.OpenAI
         ? setOpenaiApiKey
-        : setOpenrouterApiKey;
+        : provider === LLM_PROVIDER.Local
+          ? setLocalApiKey
+          : setOpenrouterApiKey;
+
+  const refreshLocalModels = async () => {
+    setLocalModelsLoading(true);
+    setLocalModelsMessage(null);
+    try {
+      const models = await listLocalModels(localBaseUrl, localApiKey);
+      setLocalModelOptions(models);
+      setLocalModelsMessage(
+        models.length === 0
+          ? "Connected, but no models were returned."
+          : `Found ${models.length} model${models.length === 1 ? "" : "s"}.`,
+      );
+    } catch (err) {
+      setLocalModelsMessage(err instanceof Error ? err.message : String(err));
+    } finally {
+      setLocalModelsLoading(false);
+    }
+  };
 
   const themeOptions: {
     value: ThemeMode;
@@ -183,7 +237,7 @@ export function SettingsPage() {
       {mode === "direct" && (
         <section className="space-y-3">
           <h2 className="text-foreground text-sm font-semibold">Provider</h2>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {DIRECT_PROVIDER_OPTIONS.map((p) => (
               <Button
                 key={p}
@@ -208,7 +262,7 @@ export function SettingsPage() {
       )}
 
       {/* API Key */}
-      {mode === "direct" && (
+      {mode === "direct" && provider !== LLM_PROVIDER.Local && (
         <section className="space-y-2">
           <h2 className="text-foreground text-xs font-medium">
             {getProviderLabel(provider)} API Key
@@ -243,6 +297,84 @@ export function SettingsPage() {
               use Llama 3.1 8B or a paid tier to access that model.
             </p>
           ) : null}
+        </section>
+      )}
+
+      {mode === "direct" && provider === LLM_PROVIDER.Local && (
+        <section className="space-y-3">
+          <h2 className="text-foreground text-sm font-semibold">
+            Local Endpoint
+          </h2>
+          <div className="space-y-2">
+            <label className="text-foreground text-xs font-medium">
+              Base URL
+            </label>
+            <input
+              type="text"
+              value={localBaseUrl}
+              onChange={(e) => setLocalBaseUrl(e.target.value)}
+              placeholder="http://localhost:11434/v1"
+              className={cn(
+                "border-border bg-muted/30 text-foreground h-8 w-full rounded-lg border px-3 py-2 text-xs",
+                "placeholder:text-muted-foreground focus:border-ring focus:outline-none",
+              )}
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-foreground text-xs font-medium">
+              Optional token
+            </label>
+            <div className="flex h-8 gap-2">
+              <input
+                type={showKey ? "text" : "password"}
+                value={currentKey}
+                onChange={(e) => setCurrentKey(e.target.value)}
+                placeholder="Leave blank for Ollama"
+                className={cn(
+                  "border-border bg-muted/30 text-foreground h-full flex-1 rounded-lg border px-3 py-2 text-xs",
+                  "placeholder:text-muted-foreground focus:border-ring focus:outline-none",
+                )}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowKey((v) => !v)}
+                className="border-border bg-muted/30 text-muted-foreground hover:text-foreground dark:hover:bg-input/45 dark:active:bg-input/55 h-full w-10 shrink-0"
+              >
+                {showKey ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={refreshLocalModels}
+              disabled={localModelsLoading}
+              className="gap-2"
+            >
+              {localModelsLoading ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <RefreshCw className="size-4" />
+              )}
+              <span>Refresh models</span>
+            </Button>
+            {localModelsMessage ? (
+              <p className="text-muted-foreground text-xs">
+                {localModelsMessage}
+              </p>
+            ) : null}
+          </div>
+          <p className="text-muted-foreground text-xs">
+            Rayvise only allows loopback Local endpoints like localhost,
+            127.0.0.1, or ::1.
+          </p>
         </section>
       )}
 
@@ -297,7 +429,12 @@ export function SettingsPage() {
             if (id != null && id !== "") setModel(id);
           }}
           onOpenChange={modelSearch.onOpenChange}
-          onInputValueChange={(val) => setModelQuery(val)}
+          onInputValueChange={(val) => {
+            setModelQuery(val);
+            if (provider === LLM_PROVIDER.Local && val.trim()) {
+              setModel(val.trim());
+            }
+          }}
         >
           <ComboboxInput
             placeholder="Select a model..."
