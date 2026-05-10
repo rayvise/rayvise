@@ -58,7 +58,9 @@ function isApplyShortcut(e: KeyboardEvent): boolean {
 
 export function ReviewPage() {
   const initial = loadStorage();
-  const win = getCurrentWebviewWindow();
+  // Keep one handle for close/apply paths; recomputing it on render can make
+  // effects fire again and disturb whichever app currently owns focus.
+  const [win] = useState(() => getCurrentWebviewWindow());
   const isMac = navigator.userAgent.toLowerCase().includes("mac");
   const applyShortcutKbdClass =
     "border-neutral-200/90 bg-white font-mono text-[11px] text-neutral-900 shadow-sm dark:border-white/25 dark:bg-white dark:text-neutral-950";
@@ -110,10 +112,6 @@ export function ReviewPage() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    void win.setFocus().catch(() => {});
-  }, [win]);
-
   // Subscribe to streaming events
   useEffect(() => {
     const unlistenChunk = listen<{ text: string }>(
@@ -135,7 +133,6 @@ export function ReviewPage() {
         durationMs: stored.durationMs,
         originalText: stored.originalText,
       });
-      void win.setFocus().catch(() => {});
     });
 
     const unlistenError = listen<{ message: string }>(

@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { runReviewMode } from "./reviewMode";
 
 const hoisted = vi.hoisted(() => {
-  const invoke = vi.fn().mockResolvedValue(undefined);
   const emit = vi.fn().mockResolvedValue(undefined);
   const saveCompletion = vi.fn().mockResolvedValue(undefined);
   const showReviewOverlay = vi.fn();
@@ -17,12 +16,8 @@ const hoisted = vi.hoisted(() => {
       onChunk("out");
     },
   );
-  return { invoke, emit, saveCompletion, showReviewOverlay, stream };
+  return { emit, saveCompletion, showReviewOverlay, stream };
 });
-
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: (...args: unknown[]) => hoisted.invoke(...args),
-}));
 
 vi.mock("@tauri-apps/api/event", () => ({
   emit: (...args: unknown[]) => hoisted.emit(...args),

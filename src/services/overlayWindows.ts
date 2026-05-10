@@ -1,4 +1,5 @@
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
+import { Window } from "@tauri-apps/api/window";
 import { toast } from "#/hooks/useToast";
 import { OVERLAY } from "#/lib/overlay";
 import type { PromptSource } from "#/stores";
@@ -122,6 +123,12 @@ export function showReviewOverlay(): WebviewWindow | null {
   const y = Math.round((window.screen.availHeight - height) / 2);
 
   try {
+    // Keep the source app, such as Chrome, active after the global hotkey.
+    // The review overlay should be visible by itself, without the main app
+    // window appearing or stealing focus.
+    void Window.getByLabel("main")
+      .then((main) => main?.hide())
+      .catch(() => {});
     const win = new WebviewWindow(`review-${Date.now()}`, {
       url: `/?overlay=${OVERLAY.review}`,
       width,
@@ -131,14 +138,16 @@ export function showReviewOverlay(): WebviewWindow | null {
       shadow: false,
       alwaysOnTop: true,
       skipTaskbar: true,
-      focus: true,
+      focus: false,
       x,
       y,
     });
-    // `focus: true` is not always enough on macOS after the app activates; nudge
-    // again once the window exists so ⌘↩ / Esc reach this webview.
     queueMicrotask(() => {
-      void win.setFocus().catch(() => {});
+      // Hide again after creation because macOS/Tauri can briefly surface the
+      // main window while adding a child overlay.
+      void Window.getByLabel("main")
+        .then((main) => main?.hide())
+        .catch(() => {});
     });
     return win;
   } catch {

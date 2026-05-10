@@ -7,6 +7,7 @@
     "core:default",
     "core:window:allow-start-dragging",
     "core:window:allow-close",
+    "core:window:allow-hide",
     "core:webview:allow-create-webview-window",
     "opener:default",
     "global-shortcut:allow-register",

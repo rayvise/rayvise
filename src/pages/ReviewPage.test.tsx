@@ -42,8 +42,9 @@ describe("ReviewPage", () => {
     );
   });
 
-  it("applies only once for a Cmd/Ctrl+Enter key press", async () => {
+  it("does not steal focus and applies only once for a Cmd/Ctrl+Enter key press", async () => {
     render(<ReviewPage />);
+    expect(mockSetFocus).not.toHaveBeenCalled();
 
     fireEvent.keyDown(document, {
       key: "Enter",
@@ -62,6 +63,8 @@ describe("ReviewPage", () => {
         targetPid: 42,
       }),
     );
-    expect(mockInvoke).toHaveBeenCalledTimes(1);
+    expect(
+      mockInvoke.mock.calls.filter(([command]) => command === "write_text_back"),
+    ).toHaveLength(1);
   });
 });
