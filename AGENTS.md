@@ -75,9 +75,17 @@ Zustand + `persist` (localStorage), all re-exported from `src/stores/index.ts`:
 
 - `VITE_DRY_RUN=true` → `dryRunClient` (highest priority; used by Vitest via `vitest.config.ts`)
 - `mode: "api"` → `rayviseApiClient` (throws — not yet implemented)
-- `mode: "direct"` → `cerebrasClient` or `openrouterClient`
+- `mode: "direct"` → `openrouterClient`, `cerebrasClient`, `openaiClient`, or `localClient`
 
 All clients implement `.stream(req, apiKey, onChunk, signal)` with `AbortSignal` support.
+
+**Local LLM provider:** `LLM_PROVIDER.Local` uses `src/services/llm/local.ts`, which calls Rust commands in `src-tauri/src/commands/local_llm.rs` instead of browser `fetch`. The Rust command validates loopback-only base URLs (`localhost`, `127.0.0.1`, `::1`), normalizes empty or `/v1` paths to `/v1/`, lists models through `/v1/models`, streams OpenAI-style SSE from `/v1/chat/completions`, and supports cancellation through `cancel_local_chat_completion`. Do not loosen the loopback-only policy without updating `docs/LOCAL_LLM.md` and the privacy wording.
+
+Local request bodies are still produced through `chatCompletionBody(LLM_PROVIDER.Local, ...)`; it maps Rayvise `instruction` messages to OpenAI-compatible `system` messages and sends `reasoning_effort: "none"` / `reasoning: { effort: "none" }`. `createThinkBlockStripper()` removes streamed `<think>...</think>` blocks before review/instant output and history save.
+
+Local settings live in `settingsStore`: `localBaseUrl`, `localApiKey`, `localModelOptions`, and `modelSelections`. Local accepts arbitrary non-empty model names because installed Ollama models vary by machine; external providers remain provider-whitelisted. The Local provider intentionally does not require an API key.
+
+For user/dev docs, see `docs/LOCAL_LLM.md`. It references official Ollama OpenAI compatibility docs and hardware constraints: Ollama's FAQ describes model loading, `ollama ps`, memory/VRAM, context, and concurrency behavior; Apple documents unified memory through Metal's `hasUnifiedMemory`; Ollama model-library pages show how model parameter count and download size differ. Keep Local documentation grounded in those external sources when changing this area.
 
 ### Database
 

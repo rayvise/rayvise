@@ -48,7 +48,8 @@ For detailed compatibility information and contributor guidance on cross-platfor
 - **Review mode** — preview, stream, and edit AI output in real-time before accepting or rejecting
 - **Instant mode** — processing overlay shows live progress while text is being written back directly to your app
 - **Cancellation** — press Esc during processing to abort the current request
-- **Privacy-first direct mode** — for those wanting to keep data between you and your AI provider only, you can do so with direct-mode. Your prompt and input text goes straight to OpenRouter or Cerebras, never through Rayvise servers, and the output is returned only to your device
+- **Privacy-first direct mode** — for those wanting to keep data between you and your AI provider only, you can do so with direct-mode. Your prompt and input text goes straight to OpenRouter, Cerebras, OpenAI, or a loopback Local LLM endpoint, never through Rayvise servers, and the output is returned only to your device
+- **Local LLM support** — run against an Ollama-compatible local OpenAI endpoint with streaming, model discovery, optional token support, and reasoning-output suppression
 - **Prompt library** — create, edit, and manage reusable prompts for your needs
 - **History** - view your usage stats and past AI responses (inputs, outputs, prompt used, etc)
 
@@ -60,7 +61,7 @@ For detailed compatibility information and contributor guidance on cross-platfor
 | Frontend      | React 19 + TypeScript                    |
 | Styling       | Tailwind CSS v4                          |
 | State         | Zustand                                  |
-| LLM providers | OpenRouter, Cerebras, OpenAI             |
+| LLM providers | OpenRouter, Cerebras, OpenAI, Local      |
 
 ## Quick Start
 
@@ -75,16 +76,17 @@ For full setup instructions see the **[getting started guide](docs/DEV_GETTING_S
 
 ## LLM Providers
 
-Rayvise currently supports three **direct-to-provider** modes (your data never touches Rayvise servers):
+Rayvise supports cloud **direct-to-provider** modes and a local OpenAI-compatible provider (your data never touches Rayvise servers):
 
 - **[OpenRouter](https://openrouter.ai/)** — access to a wide range of models
   - [Models used by Rayvise users](https://openrouter.ai/apps?url=https%3A%2F%2Frayvise.com%2F) — see what models people are using with Rayvise through OpenRouter
 - **[Cerebras](https://www.cerebras.ai/)** — ultra-fast inference powered by their Wafer Scale Engine
   - [Cerebras Chips](https://www.cerebras.ai/chip) - read more about Cerebras hardware
 - **[OpenAI](https://platform.openai.com/)** — direct access to the GPT-5 and GPT-5.4 families in Rayvise
+- **Local** — connect to a loopback OpenAI-compatible endpoint such as Ollama at `http://localhost:11434/v1`
 
 Configure your API keys in the Rayvise app's Settings page (your API keys are stored on your device and do not pass through Rayvise's servers).
-The Settings page filters models by provider so users only see models allowed for that direct connection. See **[docs/MODEL_PROVIDER_COMPLIANCE.md](docs/MODEL_PROVIDER_COMPLIANCE.md)** for how provider-scoped filtering and normalization work.
+The Settings page filters models by provider so users only see models allowed for that direct connection; Local also supports manually typed model names because installed local models vary by machine. See **[docs/MODEL_PROVIDER_COMPLIANCE.md](docs/MODEL_PROVIDER_COMPLIANCE.md)** for provider-scoped filtering and normalization, and **[docs/LOCAL_LLM.md](docs/LOCAL_LLM.md)** for Local/Ollama setup, implementation notes, and Apple Silicon hardware constraints.
 
 ## Contributing
 
