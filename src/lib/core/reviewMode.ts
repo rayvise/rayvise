@@ -34,6 +34,7 @@ export async function runReviewMode(p: ModeParams) {
         dryRunMetadata: {
           promptName: p.prompt.name,
           pageUrl: p.pageUrl,
+          provider: p.provider,
         },
       },
       p.apiKey,

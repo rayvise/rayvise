@@ -62,6 +62,13 @@ describe("runReviewMode", () => {
 
     expect(hoisted.showReviewOverlay).toHaveBeenCalled();
     expect(hoisted.stream).toHaveBeenCalled();
+    expect(hoisted.stream.mock.calls[0]?.[0]).toEqual(
+      expect.objectContaining({
+        dryRunMetadata: expect.objectContaining({
+          provider: "openrouter",
+        }),
+      }),
+    );
     expect(hoisted.saveCompletion).toHaveBeenCalledWith(
       expect.objectContaining({
         id: "cid-1",

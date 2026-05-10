@@ -16,6 +16,7 @@ export interface LLMMessage {
 export interface LLMDryRunMetadata {
   promptName: string;
   pageUrl?: string | null;
+  provider?: LLMProvider;
 }
 
 export interface LLMRequest {
