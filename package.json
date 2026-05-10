@@ -18,6 +18,12 @@
     "test:coverage": "vitest run --coverage",
     "db:generate": "drizzle-kit generate"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "msw"
+    ]
+  },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
     "@fontsource-variable/geist": "^5.2.8",
