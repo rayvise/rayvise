@@ -2,6 +2,7 @@ export const LLM_PROVIDER = {
   OpenRouter: "openrouter",
   Cerebras: "cerebras",
   OpenAI: "openai",
+  Local: "local",
 } as const;
 
 export type LLMProvider = (typeof LLM_PROVIDER)[keyof typeof LLM_PROVIDER];

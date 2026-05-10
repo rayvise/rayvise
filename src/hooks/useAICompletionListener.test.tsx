@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { useAICompletionListener } from "./useAICompletionListener";
 import { usePromptsStore, useSettingsStore } from "#/stores";
-import { getApiKey } from "#/services/llm";
+import { getApiKey, providerRequiresApiKey } from "#/services/llm";
 import {
   showToastOverlay,
   PROMPT_PICK_STORAGE_KEY,
@@ -37,6 +37,7 @@ vi.mock("#/lib/core/instantMode", () => ({
 
 vi.mock("#/services/llm", () => ({
   getApiKey: vi.fn(() => "test-api-key"),
+  providerRequiresApiKey: vi.fn(() => true),
 }));
 
 vi.mock("#/services/overlayWindows", () => ({
@@ -197,6 +198,31 @@ describe("useAICompletionListener", () => {
       ),
     );
     expect(runInstantMode).not.toHaveBeenCalled();
+  });
+
+  it("does not require an API key for local provider completions", async () => {
+    vi.mocked(getApiKey).mockReturnValueOnce("");
+    vi.mocked(providerRequiresApiKey).mockReturnValueOnce(false);
+
+    renderHook(() => useAICompletionListener());
+
+    await waitFor(() =>
+      expect(listeners.has("rayvise://hotkey-triggered")).toBe(true),
+    );
+
+    listeners.get("rayvise://hotkey-triggered")!({
+      payload: {
+        app: "com.apple.Notes",
+        selected_text: "hello",
+        target_pid: 1,
+      },
+    });
+
+    await waitFor(() => expect(runInstantMode).toHaveBeenCalled());
+    expect(showToastOverlay).not.toHaveBeenCalledWith(
+      "No API key set. Go to Settings to add one.",
+      "error",
+    );
   });
 
   it("opens prompt picker when multiple app-mapped prompts match", async () => {

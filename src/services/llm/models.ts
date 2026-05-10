@@ -9,12 +9,14 @@ export const DIRECT_PROVIDER_OPTIONS = [
   LLM_PROVIDER.OpenRouter,
   LLM_PROVIDER.Cerebras,
   LLM_PROVIDER.OpenAI,
+  LLM_PROVIDER.Local,
 ] as const satisfies readonly LLMProvider[];
 
 const PROVIDER_LABELS: Record<LLMProvider, string> = {
   [LLM_PROVIDER.OpenRouter]: "OpenRouter",
   [LLM_PROVIDER.Cerebras]: "Cerebras",
   [LLM_PROVIDER.OpenAI]: "OpenAI",
+  [LLM_PROVIDER.Local]: "Local",
 };
 
 const PROVIDER_MODEL_OPTIONS: Record<LLMProvider, ProviderModelOption[]> = {
@@ -38,9 +40,12 @@ const PROVIDER_MODEL_OPTIONS: Record<LLMProvider, ProviderModelOption[]> = {
     { value: "gpt-5-nano", label: "GPT-5 Nano" },
     { value: "gpt-4o-mini", label: "GPT-4o Mini" },
   ],
+  [LLM_PROVIDER.Local]: [{ value: "llama3.2", label: "llama3.2" }],
 };
 
 export const DEFAULT_DIRECT_PROVIDER = LLM_PROVIDER.OpenRouter;
+export const DEFAULT_LOCAL_BASE_URL = "http://localhost:11434/v1";
+export const DEFAULT_LOCAL_MODEL = "llama3.2";
 
 export function isLLMProvider(value: unknown): value is LLMProvider {
   return (
@@ -78,6 +83,8 @@ export function getDefaultModelForProvider(provider: LLMProvider): string {
       return "openai/gpt-oss-120b";
     case LLM_PROVIDER.OpenAI:
       return "gpt-5-nano";
+    case LLM_PROVIDER.Local:
+      return DEFAULT_LOCAL_MODEL;
     default:
       return (PROVIDER_MODEL_OPTIONS[provider][0] as ProviderModelOption).value;
   }
@@ -87,6 +94,10 @@ export function isModelAllowedForProvider(
   provider: LLMProvider,
   model: string,
 ): boolean {
+  if (provider === LLM_PROVIDER.Local) {
+    return model.trim().length > 0;
+  }
+
   return PROVIDER_MODEL_OPTIONS[provider].some(
     (option) => option.value === model,
   );
@@ -96,6 +107,11 @@ export function normalizeProviderModel(
   provider: LLMProvider,
   model: unknown,
 ): string {
+  if (provider === LLM_PROVIDER.Local) {
+    const trimmed = typeof model === "string" ? model.trim() : "";
+    return trimmed || getDefaultModelForProvider(provider);
+  }
+
   return typeof model === "string" && isModelAllowedForProvider(provider, model)
     ? model
     : getDefaultModelForProvider(provider);
@@ -109,5 +125,7 @@ export function getProviderAccessDescription(provider: LLMProvider): string {
       return "Select from models currently validated against the Cerebras Inference API.";
     case LLM_PROVIDER.OpenAI:
       return "Select from supported OpenAI models.";
+    case LLM_PROVIDER.Local:
+      return "Use an Ollama-compatible local OpenAI endpoint. Model names can be selected from discovery or typed manually.";
   }
 }

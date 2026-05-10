@@ -16,6 +16,7 @@ struct HotkeyPayload {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .manage(commands::local_llm::LocalLlmState::default())
         .plugin(tauri_plugin_sql::Builder::default().build())
         .plugin(tauri_plugin_opener::init())
         .plugin(
@@ -68,6 +69,9 @@ pub fn run() {
             commands::text::get_selected_text,
             commands::text::write_text_back,
             commands::file_dialog::save_json_file,
+            commands::local_llm::list_local_models,
+            commands::local_llm::cancel_local_chat_completion,
+            commands::local_llm::stream_local_chat_completion,
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")

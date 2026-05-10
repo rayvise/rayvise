@@ -248,11 +248,9 @@ fn icns_to_png_via_iconutil(
     let mut copied = false;
     for name in &candidates {
         let src = iconset_dir.join(name);
-        if src.exists() {
-            if std::fs::copy(&src, output_path).is_ok() {
-                copied = true;
-                break;
-            }
+        if src.exists() && std::fs::copy(&src, output_path).is_ok() {
+            copied = true;
+            break;
         }
     }
 

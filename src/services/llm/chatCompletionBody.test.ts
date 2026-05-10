@@ -36,6 +36,19 @@ describe("chatCompletionBody", () => {
     });
   });
 
+  it("serializes local requests with system instructions and reasoning suppression", () => {
+    expect(chatCompletionBody(LLM_PROVIDER.Local, request, true)).toEqual({
+      model: "gpt-5.4-mini",
+      messages: [
+        { role: "system", content: "Follow the prompt." },
+        { role: "user", content: "Hello" },
+      ],
+      stream: true,
+      reasoning_effort: "none",
+      reasoning: { effort: "none" },
+    });
+  });
+
   it("does not send dry-run metadata or reasoning_effort", () => {
     const body = chatCompletionBody(LLM_PROVIDER.OpenAI, request, false) as {
       dryRunMetadata?: unknown;

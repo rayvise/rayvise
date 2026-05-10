@@ -6,7 +6,7 @@ import {
   useSettingsStore,
   type PromptResolution,
 } from "#/stores";
-import { getApiKey } from "#/services/llm";
+import { getApiKey, providerRequiresApiKey } from "#/services/llm";
 import {
   showToastOverlay,
   showPromptPickOverlay,
@@ -154,7 +154,7 @@ export function useAICompletionListener() {
         }
 
         const apiKey = getApiKey();
-        if (!apiKey) {
+        if (providerRequiresApiKey() && !apiKey) {
           showToastOverlay(
             "No API key set. Go to Settings to add one.",
             "error",
@@ -231,7 +231,7 @@ export function useAICompletionListener() {
         };
 
         const apiKey = getApiKey();
-        if (!apiKey) {
+        if (providerRequiresApiKey() && !apiKey) {
           showToastOverlay(
             "No API key set. Go to Settings to add one.",
             "error",
