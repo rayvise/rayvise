@@ -35,6 +35,7 @@ interface DetailDialogProps {
   row: CompletionEntry | null;
   onClose: () => void;
   appName: (id: string) => string;
+  appIconSrc: (id: string) => string | undefined;
   onNavigateToPrompt?: (promptId: string) => void;
   onNavigateToWebsiteSite?: (siteId: string) => void;
 }
@@ -167,6 +168,7 @@ function ResizableTwoColumn({
 interface DetailDialogBodyProps {
   row: CompletionEntry;
   appName: (id: string) => string;
+  appIconSrc: (id: string) => string | undefined;
   onClose: () => void;
   onNavigateToPrompt?: (promptId: string) => void;
   onNavigateToWebsiteSite?: (siteId: string) => void;
@@ -175,11 +177,13 @@ interface DetailDialogBodyProps {
 function DetailDialogMetadataHeader({
   row,
   appName,
+  appIconSrc,
   onClose,
   onNavigateToPrompt,
   onNavigateToWebsiteSite,
 }: DetailDialogBodyProps) {
   const { prompts, websitePromptSites } = usePromptsStore();
+  const appIcon = appIconSrc(row.appId);
   const promptSourceLabel = promptSourceDisplayLabel(row.promptSource);
   const promptExists = prompts.some((p) => p.id === row.promptId);
   const websiteSiteId = useMemo(
@@ -211,7 +215,16 @@ function DetailDialogMetadataHeader({
   return (
     <div className="border-border bg-muted/15 shrink-0 rounded-lg border px-3 py-2.5">
       <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px]">
-        <span>{appName(row.appId)}</span>
+        <span className="text-foreground inline-flex items-center gap-1.5">
+          {appIcon ? (
+            <img
+              src={appIcon}
+              alt=""
+              className="h-4 w-4 shrink-0 object-contain"
+            />
+          ) : null}
+          <span>{appName(row.appId)}</span>
+        </span>
         <span>·</span>
         <span className="text-foreground inline-flex items-center gap-0.5">
           <span>{row.promptName}</span>
@@ -304,6 +317,7 @@ function DetailDialogMetadataHeader({
 function DetailDialogBody({
   row,
   appName,
+  appIconSrc,
   onClose,
   onNavigateToPrompt,
   onNavigateToWebsiteSite,
@@ -400,6 +414,7 @@ function DetailDialogBody({
       <DetailDialogMetadataHeader
         row={row}
         appName={appName}
+        appIconSrc={appIconSrc}
         onClose={onClose}
         onNavigateToPrompt={onNavigateToPrompt}
         onNavigateToWebsiteSite={onNavigateToWebsiteSite}
@@ -508,6 +523,7 @@ export function DetailDialog({
   row,
   onClose,
   appName,
+  appIconSrc,
   onNavigateToPrompt,
   onNavigateToWebsiteSite,
 }: DetailDialogProps) {
@@ -524,6 +540,7 @@ export function DetailDialog({
             key={row.id}
             row={row}
             appName={appName}
+            appIconSrc={appIconSrc}
             onClose={onClose}
             onNavigateToPrompt={onNavigateToPrompt}
             onNavigateToWebsiteSite={onNavigateToWebsiteSite}

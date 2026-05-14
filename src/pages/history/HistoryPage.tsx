@@ -26,6 +26,7 @@ import {
 import { EntryCard } from "#/pages/history/EntryCard";
 import { DetailDialog } from "#/pages/history/DetailDialog";
 import { OverviewPanel } from "#/pages/history/OverviewPanel";
+import { useAppIcons } from "#/hooks/useAppIcons";
 
 const LIST_LIMIT = 200;
 
@@ -49,12 +50,17 @@ export function HistoryPage({
   const [detailRow, setDetailRow] = useState<CompletionEntry | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const { apps } = useAppsStore();
+  const iconSrcByBundleId = useAppIcons(apps);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const appName = useCallback(
     (bundleId: string) =>
       apps.find((a) => a.bundleId === bundleId)?.name ?? bundleId,
     [apps],
+  );
+  const appIconSrc = useCallback(
+    (bundleId: string) => iconSrcByBundleId[bundleId],
+    [iconSrcByBundleId],
   );
 
   // Fetch data whenever refreshKey or debouncedSearch changes
@@ -160,6 +166,7 @@ export function HistoryPage({
                 key={row.id}
                 row={row}
                 appName={appName}
+                appIconSrc={appIconSrc}
                 onClick={() => setDetailRow(row)}
                 onDelete={() => setDeletingId(row.id)}
               />
@@ -189,6 +196,7 @@ export function HistoryPage({
         row={detailRow}
         onClose={() => setDetailRow(null)}
         appName={appName}
+        appIconSrc={appIconSrc}
         onNavigateToPrompt={onNavigateToPrompt}
         onNavigateToWebsiteSite={onNavigateToWebsiteSite}
       />

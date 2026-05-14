@@ -9,13 +9,21 @@ import { StatusIcon } from "./StatusIcon";
 interface EntryCardProps {
   row: CompletionEntry;
   appName: (id: string) => string;
+  appIconSrc: (id: string) => string | undefined;
   onClick: () => void;
   onDelete: () => void;
 }
 
-export function EntryCard({ row, appName, onClick, onDelete }: EntryCardProps) {
+export function EntryCard({
+  row,
+  appName,
+  appIconSrc,
+  onClick,
+  onDelete,
+}: EntryCardProps) {
   const name = appName(row.appId);
   const initial = name.charAt(0).toUpperCase();
+  const iconSrc = appIconSrc(row.appId);
   const promptSourceLabel = promptSourceDisplayLabel(row.promptSource);
 
   function handleRowKeyDown(e: KeyboardEvent) {
@@ -39,12 +47,20 @@ export function EntryCard({ row, appName, onClick, onDelete }: EntryCardProps) {
       {/* App + time */}
       <div className="mb-1 flex items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
-          <span
-            className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white"
-            style={{ backgroundColor: appColor(row.appId) }}
-          >
-            {initial}
-          </span>
+          {iconSrc ? (
+            <img
+              src={iconSrc}
+              alt=""
+              className="h-5 w-5 shrink-0 object-contain"
+            />
+          ) : (
+            <span
+              className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white"
+              style={{ backgroundColor: appColor(row.appId) }}
+            >
+              {initial}
+            </span>
+          )}
           <span className="text-muted-foreground truncate text-[11px]">
             {name}
           </span>

@@ -1,6 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, waitFor } from "@testing-library/react";
 import { HistoryPage } from "./HistoryPage";
+import { useAppsStore } from "#/stores";
+
+vi.mock("#/hooks/useAppIcons", () => ({
+  useAppIcons: () => ({}),
+}));
 
 const dbMocks = vi.hoisted(() => ({
   listCompletions: vi.fn(),
@@ -61,6 +66,11 @@ describe("HistoryPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     listeners.clear();
+    useAppsStore.setState({
+      apps: [],
+      activeApp: null,
+      hiddenAppBundleIds: [],
+    });
     dbMocks.listCompletions.mockResolvedValue([sampleRow]);
     dbMocks.getUsageStats.mockResolvedValue({
       id: "global",
