@@ -57,7 +57,8 @@ function IndeterminateCheckbox({
 const columns: ColumnDef<PromptSearchRow>[] = [
   {
     id: "select",
-    size: 36,
+    // Room for px-2 + 16px checkbox without overflowing into "Name"
+    size: 44,
     header: ({ table }) => (
       <IndeterminateCheckbox
         checked={table.getIsAllRowsSelected()}
@@ -218,15 +219,27 @@ export function ExportDialog({ open, onOpenChange }: ExportDialogProps) {
 
             {/* Table */}
             <div className="flex-1 overflow-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-muted/40 sticky top-0">
+              <table className="w-full table-fixed border-separate border-spacing-0 text-sm">
+                <thead className="bg-muted sticky top-0 z-10 shadow-[0_1px_0_0_var(--border)]">
                   {table.getHeaderGroups().map((hg) => (
                     <tr key={hg.id}>
                       {hg.headers.map((header) => (
                         <th
                           key={header.id}
-                          className="text-muted-foreground px-3 py-2 text-left text-xs font-medium"
-                          style={{ width: header.column.columnDef.size }}
+                          className={cn(
+                            "text-muted-foreground py-2 text-xs font-medium",
+                            header.column.id === "select"
+                              ? "w-11 px-2 text-center align-middle"
+                              : "px-3 text-left align-middle",
+                          )}
+                          style={
+                            header.column.columnDef.size != null
+                              ? {
+                                  width: header.column.columnDef.size,
+                                  minWidth: header.column.columnDef.size,
+                                }
+                              : undefined
+                          }
                         >
                           {flexRender(
                             header.column.columnDef.header,
@@ -260,7 +273,12 @@ export function ExportDialog({ open, onOpenChange }: ExportDialogProps) {
                         {row.getVisibleCells().map((cell) => (
                           <td
                             key={cell.id}
-                            className="px-3 py-2"
+                            className={cn(
+                              "py-2 align-middle",
+                              cell.column.id === "select"
+                                ? "w-11 px-2 text-center"
+                                : "px-3",
+                            )}
                             onClick={
                               // Prevent double-toggle when clicking the checkbox itself
                               cell.column.id === "select"
