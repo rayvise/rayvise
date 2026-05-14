@@ -535,33 +535,43 @@ export function DetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="bg-card text-card-foreground ring-border flex max-h-[90vh] w-full max-w-5xl flex-col ring-1 sm:max-w-5xl">
+      <DialogContent
+        className={cn(
+          "bg-card text-card-foreground ring-border flex max-h-[90vh] w-full max-w-5xl flex-col ring-1 sm:max-w-5xl",
+          /* Avoid vertical jump when body height changes: default dialog is translate-y-centered. */
+          "top-[max(1.5rem,min(7vh,3rem))] translate-y-0",
+        )}
+      >
         <DialogHeader>
           <DialogTitle className="text-foreground text-sm font-semibold">
             Details
           </DialogTitle>
         </DialogHeader>
-        {detailStatus === "loading" && (
-          <div className="text-muted-foreground flex min-h-[min(440px,58vh)] flex-1 items-center justify-center text-[13px]">
-            Loading…
-          </div>
-        )}
-        {detailStatus === "not_found" && (
-          <div className="text-muted-foreground flex min-h-[min(440px,58vh)] flex-1 items-center justify-center text-[13px]">
-            This entry could not be loaded.
-          </div>
-        )}
-        {detailStatus === "ready" && detailRow && (
-          <DetailDialogBody
-            key={detailRow.id}
-            row={detailRow}
-            appName={appName}
-            appIconSrc={appIconSrc}
-            onClose={onClose}
-            onNavigateToPrompt={onNavigateToPrompt}
-            onNavigateToWebsiteSite={onNavigateToWebsiteSite}
-          />
-        )}
+        <div className="flex min-h-[min(560px,calc(58vh+9rem))] flex-1 flex-col overflow-hidden">
+          {detailStatus === "loading" && (
+            <div className="text-muted-foreground flex flex-1 items-center justify-center text-[13px]">
+              Loading…
+            </div>
+          )}
+          {detailStatus === "not_found" && (
+            <div className="text-muted-foreground flex flex-1 items-center justify-center text-[13px]">
+              This entry could not be loaded.
+            </div>
+          )}
+          {detailStatus === "ready" && detailRow && (
+            <div className="flex min-h-0 flex-1 flex-col">
+              <DetailDialogBody
+                key={detailRow.id}
+                row={detailRow}
+                appName={appName}
+                appIconSrc={appIconSrc}
+                onClose={onClose}
+                onNavigateToPrompt={onNavigateToPrompt}
+                onNavigateToWebsiteSite={onNavigateToWebsiteSite}
+              />
+            </div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
