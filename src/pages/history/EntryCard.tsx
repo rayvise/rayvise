@@ -1,24 +1,24 @@
-import type { KeyboardEvent } from "react";
+import { memo, type KeyboardEvent } from "react";
 import { XCircle } from "lucide-react";
-import type { CompletionEntry } from "#/services/db";
+import type { CompletionListEntry } from "#/services/db";
 import { Button, buttonVariants } from "#/components/ui/button";
 import { cn } from "#/lib/utils";
 import { timeAgo, appColor, promptSourceDisplayLabel } from "./helpers";
 import { StatusIcon } from "./StatusIcon";
 
 interface EntryCardProps {
-  row: CompletionEntry;
+  row: CompletionListEntry;
   appName: (id: string) => string;
   appIconSrc: (id: string) => string | undefined;
-  onClick: () => void;
-  onDelete: () => void;
+  onOpenDetail: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
-export function EntryCard({
+function EntryCardInner({
   row,
   appName,
   appIconSrc,
-  onClick,
+  onOpenDetail,
   onDelete,
 }: EntryCardProps) {
   const name = appName(row.appId);
@@ -29,7 +29,7 @@ export function EntryCard({
   function handleRowKeyDown(e: KeyboardEvent) {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      onClick();
+      onOpenDetail(row.id);
     }
   }
 
@@ -37,7 +37,7 @@ export function EntryCard({
     <div
       role="button"
       tabIndex={0}
-      onClick={onClick}
+      onClick={() => onOpenDetail(row.id)}
       onKeyDown={handleRowKeyDown}
       className={cn(
         buttonVariants({ variant: "ghost" }),
@@ -117,7 +117,7 @@ export function EntryCard({
           size="icon-xs"
           onClick={(e) => {
             e.stopPropagation();
-            onDelete();
+            onDelete(row.id);
           }}
           className="text-muted-foreground/60 hover:text-red-400"
         >
@@ -127,3 +127,5 @@ export function EntryCard({
     </div>
   );
 }
+
+export const EntryCard = memo(EntryCardInner);

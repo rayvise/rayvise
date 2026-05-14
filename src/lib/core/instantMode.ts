@@ -7,6 +7,7 @@ import {
   showToastOverlay,
 } from "#/services/overlayWindows";
 import { saveCompletion } from "#/services/db";
+import type { LLMProvider } from "#/services/llm/types";
 import { ModeParams, isAbortError } from "./types";
 
 // Instant mode is used when the user wants to apply the completion to the target app immediately.
@@ -46,7 +47,7 @@ export async function runInstantMode(p: ModeParams) {
         dryRunMetadata: {
           promptName: p.prompt.name,
           pageUrl: p.pageUrl,
-          provider: p.provider,
+          provider: p.provider as LLMProvider,
         },
       },
       p.apiKey,

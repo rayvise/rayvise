@@ -1,9 +1,20 @@
 import Database from "@tauri-apps/plugin-sql";
 import { drizzle } from "drizzle-orm/sqlite-proxy";
-import { eq, desc, like, or } from "drizzle-orm";
+import { eq, desc, like, or, sql } from "drizzle-orm";
 import { completions, usageStats } from "./schema";
 
 export type CompletionEntry = typeof completions.$inferSelect;
+
+/** Max characters of `input_text` loaded for history list rows (full text in detail). */
+export const HISTORY_LIST_INPUT_PREVIEW_CHARS = 800;
+
+/** History list row: excludes large columns; `inputText` is a DB-side preview only. */
+export type CompletionListEntry = Omit<
+  CompletionEntry,
+  "outputText" | "finalText" | "promptText" | "inputText"
+> & {
+  inputText: string;
+};
 
 export type UsageStatsRow = Omit<
   typeof usageStats.$inferSelect,
@@ -173,16 +184,37 @@ export async function updateCompletionOutcome(
   }
 }
 
+const completionListSelect = {
+  id: completions.id,
+  timestamp: completions.timestamp,
+  inputText: sql<string>`substr(${completions.inputText}, 1, ${HISTORY_LIST_INPUT_PREVIEW_CHARS})`,
+  wasApplied: completions.wasApplied,
+  isReviewMode: completions.isReviewMode,
+  hadError: completions.hadError,
+  errorMessage: completions.errorMessage,
+  inputTokens: completions.inputTokens,
+  outputTokens: completions.outputTokens,
+  completionMs: completions.completionMs,
+  appId: completions.appId,
+  promptId: completions.promptId,
+  promptName: completions.promptName,
+  promptSource: completions.promptSource,
+  pageUrl: completions.pageUrl,
+  matchedWebsitePattern: completions.matchedWebsitePattern,
+  model: completions.model,
+  provider: completions.provider,
+} as const;
+
 export async function listCompletions(
   limit: number,
   offset: number,
   search?: string,
-): Promise<CompletionEntry[]> {
+): Promise<CompletionListEntry[]> {
   const db = await getDb();
   if (search) {
     const pattern = `%${search}%`;
     const rows = await db
-      .select()
+      .select(completionListSelect)
       .from(completions)
       .where(
         or(
@@ -196,15 +228,28 @@ export async function listCompletions(
       .orderBy(desc(completions.timestamp))
       .limit(limit)
       .offset(offset);
-    return rows as CompletionEntry[];
+    return rows as CompletionListEntry[];
   }
   const rows = await db
-    .select()
+    .select(completionListSelect)
     .from(completions)
     .orderBy(desc(completions.timestamp))
     .limit(limit)
     .offset(offset);
-  return rows as CompletionEntry[];
+  return rows as CompletionListEntry[];
+}
+
+export async function getCompletion(
+  id: string,
+): Promise<CompletionEntry | null> {
+  const db = await getDb();
+  const rows = await db
+    .select()
+    .from(completions)
+    .where(eq(completions.id, id))
+    .limit(1);
+  const row = rows[0];
+  return row ? (row as CompletionEntry) : null;
 }
 
 export async function listDistinctPrompts(): Promise<

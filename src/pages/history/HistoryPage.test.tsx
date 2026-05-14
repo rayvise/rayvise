@@ -1,7 +1,36 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import type { ReactNode } from "react";
 import { HistoryPage } from "./HistoryPage";
 import { useAppsStore } from "#/stores";
+import type { CompletionEntry, CompletionListEntry } from "#/services/db";
+
+vi.mock("#/components/ui/resizable", () => ({
+  ResizablePanelGroup: ({
+    children,
+    className,
+  }: {
+    children: ReactNode;
+    className?: string;
+  }) => (
+    <div data-testid="resizable-panel-group" className={className}>
+      {children}
+    </div>
+  ),
+  ResizablePanel: ({
+    children,
+    className,
+  }: {
+    children: ReactNode;
+    className?: string;
+  }) => (
+    <div data-testid="resizable-panel" className={className}>
+      {children}
+    </div>
+  ),
+  ResizableHandle: () => <div data-testid="resizable-handle" />,
+}));
 
 vi.mock("#/hooks/useAppIcons", () => ({
   useAppIcons: () => ({}),
@@ -9,6 +38,7 @@ vi.mock("#/hooks/useAppIcons", () => ({
 
 const dbMocks = vi.hoisted(() => ({
   listCompletions: vi.fn(),
+  getCompletion: vi.fn(),
   getUsageStats: vi.fn(),
   listDistinctPrompts: vi.fn(),
   deleteCompletion: vi.fn().mockResolvedValue(undefined),
@@ -18,6 +48,7 @@ const dbMocks = vi.hoisted(() => ({
 
 vi.mock("#/services/db", () => ({
   listCompletions: (...args: unknown[]) => dbMocks.listCompletions(...args),
+  getCompletion: (...args: unknown[]) => dbMocks.getCompletion(...args),
   getUsageStats: (...args: unknown[]) => dbMocks.getUsageStats(...args),
   listDistinctPrompts: (...args: unknown[]) =>
     dbMocks.listDistinctPrompts(...args),
@@ -38,12 +69,10 @@ vi.mock("@tauri-apps/api/event", () => ({
   },
 }));
 
-const sampleRow = {
+const sampleListRow: CompletionListEntry = {
   id: "c1",
   timestamp: Date.now(),
   inputText: "hello",
-  outputText: "world",
-  finalText: null,
   wasApplied: 0,
   isReviewMode: 1,
   hadError: 0,
@@ -54,12 +83,18 @@ const sampleRow = {
   appId: "com.app",
   promptId: "p1",
   promptName: "P",
-  promptText: "t",
   promptSource: "default",
   pageUrl: null,
   matchedWebsitePattern: null,
   model: "m",
   provider: "openrouter",
+};
+
+const sampleFullRow: CompletionEntry = {
+  ...sampleListRow,
+  outputText: "world",
+  finalText: null,
+  promptText: "full prompt body",
 };
 
 describe("HistoryPage", () => {
@@ -71,7 +106,8 @@ describe("HistoryPage", () => {
       activeApp: null,
       hiddenAppBundleIds: [],
     });
-    dbMocks.listCompletions.mockResolvedValue([sampleRow]);
+    dbMocks.listCompletions.mockResolvedValue([sampleListRow]);
+    dbMocks.getCompletion.mockResolvedValue(sampleFullRow);
     dbMocks.getUsageStats.mockResolvedValue({
       id: "global",
       totalCompletions: 1,
@@ -101,5 +137,53 @@ describe("HistoryPage", () => {
     await waitFor(() =>
       expect(dbMocks.listCompletions).toHaveBeenCalledTimes(2),
     );
+  });
+
+  it("loads full completion when opening the detail dialog", async () => {
+    let resolveDetail!: (row: CompletionEntry | null) => void;
+    const detailPromise = new Promise<CompletionEntry | null>((resolve) => {
+      resolveDetail = resolve;
+    });
+    dbMocks.getCompletion.mockReturnValue(detailPromise);
+
+    const user = userEvent.setup();
+    render(<HistoryPage />);
+
+    await waitFor(() =>
+      expect(dbMocks.listCompletions).toHaveBeenCalledTimes(1),
+    );
+
+    const card = screen.getByText("hello").closest('[role="button"]');
+    expect(card).toBeTruthy();
+    await user.click(card!);
+
+    expect(screen.getByText("Loading…")).toBeInTheDocument();
+    await waitFor(() =>
+      expect(dbMocks.getCompletion).toHaveBeenCalledWith("c1"),
+    );
+    resolveDetail(sampleFullRow);
+
+    await waitFor(() => {
+      expect(screen.getByText("world")).toBeInTheDocument();
+    });
+  });
+
+  it("shows a message when getCompletion returns null", async () => {
+    dbMocks.getCompletion.mockResolvedValue(null);
+    const user = userEvent.setup();
+    render(<HistoryPage />);
+
+    await waitFor(() =>
+      expect(dbMocks.listCompletions).toHaveBeenCalledTimes(1),
+    );
+
+    const card = screen.getByText("hello").closest('[role="button"]');
+    await user.click(card!);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("This entry could not be loaded."),
+      ).toBeInTheDocument();
+    });
   });
 });

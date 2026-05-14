@@ -32,7 +32,9 @@ import {
 } from "./helpers";
 
 interface DetailDialogProps {
-  row: CompletionEntry | null;
+  selectedId: string | null;
+  detailStatus: "idle" | "loading" | "ready" | "not_found";
+  detailRow: CompletionEntry | null;
   onClose: () => void;
   appName: (id: string) => string;
   appIconSrc: (id: string) => string | undefined;
@@ -520,25 +522,39 @@ function DetailDialogBody({
 }
 
 export function DetailDialog({
-  row,
+  selectedId,
+  detailStatus,
+  detailRow,
   onClose,
   appName,
   appIconSrc,
   onNavigateToPrompt,
   onNavigateToWebsiteSite,
 }: DetailDialogProps) {
+  const open = selectedId !== null;
+
   return (
-    <Dialog open={row !== null} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="bg-card text-card-foreground ring-border flex max-h-[90vh] w-full max-w-5xl flex-col ring-1 sm:max-w-5xl">
         <DialogHeader>
           <DialogTitle className="text-foreground text-sm font-semibold">
             Details
           </DialogTitle>
         </DialogHeader>
-        {row && (
+        {detailStatus === "loading" && (
+          <div className="text-muted-foreground flex min-h-[min(440px,58vh)] flex-1 items-center justify-center text-[13px]">
+            Loading…
+          </div>
+        )}
+        {detailStatus === "not_found" && (
+          <div className="text-muted-foreground flex min-h-[min(440px,58vh)] flex-1 items-center justify-center text-[13px]">
+            This entry could not be loaded.
+          </div>
+        )}
+        {detailStatus === "ready" && detailRow && (
           <DetailDialogBody
-            key={row.id}
-            row={row}
+            key={detailRow.id}
+            row={detailRow}
             appName={appName}
             appIconSrc={appIconSrc}
             onClose={onClose}
