@@ -155,7 +155,7 @@ export function PromptsSection({
           ) : null}
         </span>
         {isDefault && (
-          <Star className="fill-primary text-primary mr-1.5 h-2.5 w-2.5 shrink-0" />
+          <Star className="fill-primary text-primary mr-1 h-2.5 w-2.5 shrink-0" />
         )}
       </Button>
     );
@@ -165,7 +165,7 @@ export function PromptsSection({
     <div className="flex min-h-0 min-w-0 flex-1 flex-col">
       {prompts.length > 0 ? (
         <div className="shrink-0">
-          <p className="text-muted-foreground mb-1 px-3 text-xs font-semibold tracking-wider uppercase select-none">
+          <p className="text-muted-foreground mb-1 px-3 text-xs tracking-wider select-none">
             Prompts
           </p>
           <div className="mb-2 px-2">
@@ -221,7 +221,7 @@ export function PromptsSection({
                     open={isOpen}
                     onOpenChange={() => toggleGroup(app.bundleId)}
                   >
-                    <CollapsibleTrigger className="text-foreground/80 hover:bg-secondary hover:text-foreground flex w-full cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-colors select-none">
+                    <CollapsibleTrigger className="text-foreground/80 hover:bg-secondary hover:text-foreground flex w-full cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px] leading-snug font-medium transition-colors select-none">
                       {iconSrcByBundleId[app.bundleId] ? (
                         <img
                           src={iconSrcByBundleId[app.bundleId]}
@@ -260,7 +260,7 @@ export function PromptsSection({
                   open={resolvedOpenGroups.has("__unassigned__")}
                   onOpenChange={() => toggleGroup("__unassigned__")}
                 >
-                  <CollapsibleTrigger className="text-foreground/80 hover:bg-secondary hover:text-foreground flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors select-none">
+                  <CollapsibleTrigger className="text-foreground/80 hover:bg-secondary hover:text-foreground flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-1.5 text-[13px] leading-snug font-medium transition-colors select-none">
                     <ChevronRight
                       className={cn(
                         "h-3.5 w-3.5 shrink-0 transition-transform duration-150",

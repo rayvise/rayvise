@@ -108,7 +108,7 @@ export function AppsPage({ onNavigateToSettings }: AppsPageProps) {
                 <div
                   key={app.bundleId}
                   className={cn(
-                    "border-border/70 bg-card/40 hover:border-border hover:bg-card/60 rounded-xl border px-3 py-2.5 transition-colors",
+                    "border-border/70 bg-card/40 hover:border-border hover:bg-card/60 rounded-xl border px-3 py-2 transition-colors",
                     assigned.length > 0 && "shadow-xs",
                   )}
                 >
@@ -150,7 +150,7 @@ export function AppsPage({ onNavigateToSettings }: AppsPageProps) {
                     </DropdownMenu>
                   </div>
 
-                  <div className="bg-muted/20 mt-3 rounded-xl border border-dashed border-white/10 p-3">
+                  <div className="bg-muted/20 mt-1 rounded-xl border border-dashed border-white/10 p-3">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <p className="text-foreground/90 text-xs font-medium tracking-wide uppercase">
                         Mapped prompts
@@ -190,7 +190,7 @@ export function AppsPage({ onNavigateToSettings }: AppsPageProps) {
                         ))}
                       </div>
                     ) : (
-                      <p className="text-muted-foreground mt-3 text-xs font-light italic">
+                      <p className="text-muted-foreground mt-2 text-xs font-light italic">
                         No prompts assigned yet. Add one below for quick access
                         when this app is active.
                       </p>
