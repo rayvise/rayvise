@@ -32,9 +32,12 @@ import {
 } from "./helpers";
 
 interface DetailDialogProps {
-  row: CompletionEntry | null;
+  selectedId: string | null;
+  detailStatus: "idle" | "loading" | "ready" | "not_found";
+  detailRow: CompletionEntry | null;
   onClose: () => void;
   appName: (id: string) => string;
+  appIconSrc: (id: string) => string | undefined;
   onNavigateToPrompt?: (promptId: string) => void;
   onNavigateToWebsiteSite?: (siteId: string) => void;
 }
@@ -167,6 +170,7 @@ function ResizableTwoColumn({
 interface DetailDialogBodyProps {
   row: CompletionEntry;
   appName: (id: string) => string;
+  appIconSrc: (id: string) => string | undefined;
   onClose: () => void;
   onNavigateToPrompt?: (promptId: string) => void;
   onNavigateToWebsiteSite?: (siteId: string) => void;
@@ -175,11 +179,13 @@ interface DetailDialogBodyProps {
 function DetailDialogMetadataHeader({
   row,
   appName,
+  appIconSrc,
   onClose,
   onNavigateToPrompt,
   onNavigateToWebsiteSite,
 }: DetailDialogBodyProps) {
   const { prompts, websitePromptSites } = usePromptsStore();
+  const appIcon = appIconSrc(row.appId);
   const promptSourceLabel = promptSourceDisplayLabel(row.promptSource);
   const promptExists = prompts.some((p) => p.id === row.promptId);
   const websiteSiteId = useMemo(
@@ -211,7 +217,16 @@ function DetailDialogMetadataHeader({
   return (
     <div className="border-border bg-muted/15 shrink-0 rounded-lg border px-3 py-2.5">
       <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px]">
-        <span>{appName(row.appId)}</span>
+        <span className="text-foreground inline-flex items-center gap-1.5">
+          {appIcon ? (
+            <img
+              src={appIcon}
+              alt=""
+              className="h-4 w-4 shrink-0 object-contain"
+            />
+          ) : null}
+          <span>{appName(row.appId)}</span>
+        </span>
         <span>·</span>
         <span className="text-foreground inline-flex items-center gap-0.5">
           <span>{row.promptName}</span>
@@ -304,6 +319,7 @@ function DetailDialogMetadataHeader({
 function DetailDialogBody({
   row,
   appName,
+  appIconSrc,
   onClose,
   onNavigateToPrompt,
   onNavigateToWebsiteSite,
@@ -400,6 +416,7 @@ function DetailDialogBody({
       <DetailDialogMetadataHeader
         row={row}
         appName={appName}
+        appIconSrc={appIconSrc}
         onClose={onClose}
         onNavigateToPrompt={onNavigateToPrompt}
         onNavigateToWebsiteSite={onNavigateToWebsiteSite}
@@ -505,30 +522,56 @@ function DetailDialogBody({
 }
 
 export function DetailDialog({
-  row,
+  selectedId,
+  detailStatus,
+  detailRow,
   onClose,
   appName,
+  appIconSrc,
   onNavigateToPrompt,
   onNavigateToWebsiteSite,
 }: DetailDialogProps) {
+  const open = selectedId !== null;
+
   return (
-    <Dialog open={row !== null} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="bg-card text-card-foreground ring-border flex max-h-[90vh] w-full max-w-5xl flex-col ring-1 sm:max-w-5xl">
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
+      <DialogContent
+        className={cn(
+          "bg-card text-card-foreground ring-border flex max-h-[90vh] w-full max-w-5xl flex-col ring-1 sm:max-w-5xl",
+          /* Avoid vertical jump when body height changes: default dialog is translate-y-centered. */
+          "top-[max(1.5rem,min(7vh,3rem))] translate-y-0",
+        )}
+      >
         <DialogHeader>
           <DialogTitle className="text-foreground text-sm font-semibold">
             Details
           </DialogTitle>
         </DialogHeader>
-        {row && (
-          <DetailDialogBody
-            key={row.id}
-            row={row}
-            appName={appName}
-            onClose={onClose}
-            onNavigateToPrompt={onNavigateToPrompt}
-            onNavigateToWebsiteSite={onNavigateToWebsiteSite}
-          />
-        )}
+        <div className="flex min-h-[min(560px,calc(58vh+9rem))] flex-1 flex-col overflow-hidden">
+          {detailStatus === "loading" && (
+            <div className="text-muted-foreground flex flex-1 items-center justify-center text-[13px]">
+              Loading…
+            </div>
+          )}
+          {detailStatus === "not_found" && (
+            <div className="text-muted-foreground flex flex-1 items-center justify-center text-[13px]">
+              This entry could not be loaded.
+            </div>
+          )}
+          {detailStatus === "ready" && detailRow && (
+            <div className="flex min-h-0 flex-1 flex-col">
+              <DetailDialogBody
+                key={detailRow.id}
+                row={detailRow}
+                appName={appName}
+                appIconSrc={appIconSrc}
+                onClose={onClose}
+                onNavigateToPrompt={onNavigateToPrompt}
+                onNavigateToWebsiteSite={onNavigateToWebsiteSite}
+              />
+            </div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );

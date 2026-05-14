@@ -1,27 +1,35 @@
-import type { KeyboardEvent } from "react";
+import { memo, type KeyboardEvent } from "react";
 import { XCircle } from "lucide-react";
-import type { CompletionEntry } from "#/services/db";
+import type { CompletionListEntry } from "#/services/db";
 import { Button, buttonVariants } from "#/components/ui/button";
 import { cn } from "#/lib/utils";
 import { timeAgo, appColor, promptSourceDisplayLabel } from "./helpers";
 import { StatusIcon } from "./StatusIcon";
 
 interface EntryCardProps {
-  row: CompletionEntry;
+  row: CompletionListEntry;
   appName: (id: string) => string;
-  onClick: () => void;
-  onDelete: () => void;
+  appIconSrc: (id: string) => string | undefined;
+  onOpenDetail: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
-export function EntryCard({ row, appName, onClick, onDelete }: EntryCardProps) {
+function EntryCardInner({
+  row,
+  appName,
+  appIconSrc,
+  onOpenDetail,
+  onDelete,
+}: EntryCardProps) {
   const name = appName(row.appId);
   const initial = name.charAt(0).toUpperCase();
+  const iconSrc = appIconSrc(row.appId);
   const promptSourceLabel = promptSourceDisplayLabel(row.promptSource);
 
   function handleRowKeyDown(e: KeyboardEvent) {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      onClick();
+      onOpenDetail(row.id);
     }
   }
 
@@ -29,7 +37,7 @@ export function EntryCard({ row, appName, onClick, onDelete }: EntryCardProps) {
     <div
       role="button"
       tabIndex={0}
-      onClick={onClick}
+      onClick={() => onOpenDetail(row.id)}
       onKeyDown={handleRowKeyDown}
       className={cn(
         buttonVariants({ variant: "ghost" }),
@@ -39,12 +47,20 @@ export function EntryCard({ row, appName, onClick, onDelete }: EntryCardProps) {
       {/* App + time */}
       <div className="mb-1 flex items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
-          <span
-            className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white"
-            style={{ backgroundColor: appColor(row.appId) }}
-          >
-            {initial}
-          </span>
+          {iconSrc ? (
+            <img
+              src={iconSrc}
+              alt=""
+              className="h-5 w-5 shrink-0 object-contain"
+            />
+          ) : (
+            <span
+              className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white"
+              style={{ backgroundColor: appColor(row.appId) }}
+            >
+              {initial}
+            </span>
+          )}
           <span className="text-muted-foreground truncate text-[11px]">
             {name}
           </span>
@@ -101,7 +117,7 @@ export function EntryCard({ row, appName, onClick, onDelete }: EntryCardProps) {
           size="icon-xs"
           onClick={(e) => {
             e.stopPropagation();
-            onDelete();
+            onDelete(row.id);
           }}
           className="text-muted-foreground/60 hover:text-red-400"
         >
@@ -111,3 +127,5 @@ export function EntryCard({ row, appName, onClick, onDelete }: EntryCardProps) {
     </div>
   );
 }
+
+export const EntryCard = memo(EntryCardInner);
